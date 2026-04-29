@@ -76,6 +76,7 @@
     .game-viewport {
       display: grid;
       grid-template-columns: 1fr 280px;
+      min-height: 0;
       height: 100%;
       overflow: hidden;
     }
@@ -84,6 +85,7 @@
     .terminal {
       display: flex;
       flex-direction: column;
+      min-height: 0;
       height: 100%;
       overflow: hidden;
       position: relative;
@@ -128,6 +130,7 @@
     /* Narrative output */
     .narrative-wrap {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       padding: var(--space-5);
       scroll-behavior: smooth;
