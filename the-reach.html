@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>The Reach — Universe Overview | The Ashen Reach</title>
+  <meta name="description" content="The Ashen Reach spans 400 star systems across the galaxy's inner arm. Learn the history of the Scorching, the four factions that survived it, and the weapon that could end them all.">
+  <link rel="canonical" href="https://theashenreach.com/the-reach">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://theashenreach.com/the-reach">
+  <meta property="og:title"       content="The Reach — Universe Overview | The Ashen Reach">
+  <meta property="og:description" content="400 star systems. A civilisation built on the ashes of a war that burned suns. This is how it started. This is what remains.">
+  <meta property="og:image"       content="https://theashenreach.com/assets/og-image.jpg">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Ashen Reach — Universe Overview",
+    "description": "The history, factions, technology and conflicts of the Ashen Reach universe.",
+    "url": "https://theashenreach.com/the-reach",
+    "publisher": { "@type": "Organization", "name": "The Ashen Reach", "url": "https://theashenreach.com" }
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><circle cx='16' cy='16' r='12' fill='none' stroke='%238b0000' stroke-width='1.5'/><circle cx='16' cy='16' r='4' fill='%23cc1a1a'/></svg>">
+  <link rel="stylesheet" href="styles/signal-decay.css">
+
+  <style>
+    /* ── PAGE HERO ── */
+    .page-hero {
+      min-height: 55vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: calc(var(--nav-height) + var(--space-9)) var(--space-8) var(--space-8);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--blood);
+    }
+    .page-hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 60%, rgba(139,0,0,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, rgba(74,26,122,0.06) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .page-hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,0,0,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .page-hero-content { position: relative; z-index: 1; max-width: var(--max-width); margin: 0 auto; width: 100%; }
+    .page-hero-path {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .page-hero-path a { color: var(--steel-2); transition: color var(--transition-fast); }
+    .page-hero-path a:hover { color: var(--ghost); }
+    .page-hero-path span { color: var(--blood); }
+
+    /* ── CONTENT LAYOUT ── */
+    .reach-layout {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-5);
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .reach-main {}
+    .reach-sidebar {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-5));
+    }
+
+    /* ── CONTENT BLOCKS ── */
+    .content-section { margin-bottom: var(--space-8); }
+    .content-section-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .content-section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--blood);
+      margin-bottom: var(--space-5);
+    }
+    .content-body {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--ghost);
+      line-height: 1.8;
+    }
+    .content-body p { margin-bottom: 1.1rem; }
+    .content-body p:last-child { margin-bottom: 0; }
+    .content-body strong { color: var(--white); font-weight: 600; }
+    .content-body em { color: var(--amber-2); font-style: normal; }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 2px solid var(--blood);
+      padding: var(--space-4) var(--space-5);
+      margin: var(--space-5) 0;
+      background: rgba(139,0,0,0.04);
+    }
+    .pull-quote p {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--white-2);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      font-style: italic;
+      margin: 0;
+    }
+    .pull-quote cite {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--steel-2);
+      letter-spacing: 0.1em;
+      margin-top: var(--space-3);
+      font-style: normal;
+    }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; margin: var(--space-5) 0; }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: var(--space-4);
+      padding-bottom: var(--space-5);
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 89px;
+      top: 8px;
+      bottom: 0;
+      width: 1px;
+      background: var(--ash-2);
+    }
+    .timeline-item:last-child::before { display: none; }
+    .timeline-cycle {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--crimson);
+      padding-top: 2px;
+      text-align: right;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: 84px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      background: var(--blood);
+      border: 1px solid var(--crimson);
+    }
+    .timeline-body {}
+    .timeline-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--white-2);
+      margin-bottom: 0.3rem;
+    }
+    .timeline-text {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.65;
+    }
+
+    /* Faction summary rows */
+    .faction-row {
+      display: grid;
+      grid-template-columns: 3px 1fr;
+      gap: var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--ash-2);
+      align-items: start;
+    }
+    .faction-row:first-child { border-top: 1px solid var(--ash-2); }
+    .faction-row-bar { height: 100%; min-height: 60px; }
+    .faction-row-content {}
+    .faction-row-name {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.2rem;
+    }
+    .faction-row-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .faction-row-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.6;
+    }
+    .faction-row-link {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+      transition: color var(--transition-fast);
+    }
+    .faction-row-link:hover { opacity: 0.7; }
+
+    /* Tech cards */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--ash-2);
+      margin-top: var(--space-4);
+    }
+    .tech-card {
+      background: var(--void-2);
+      padding: var(--space-4) var(--space-5);
+      position: relative;
+    }
+    .tech-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--ash-3);
+    }
+    .tech-name {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--white-2);
+      margin-bottom: 0.2rem;
+    }
+    .tech-type {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .tech-desc {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--ghost);
+      line-height: 1.6;
+    }
+    .tech-status {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border: 1px solid;
+      margin-top: var(--space-3);
+    }
+    .status-active  { color: var(--toxic-2);  border-color: var(--toxic); }
+    .status-banned  { color: var(--ember);    border-color: var(--crimson); }
+    .status-rare    { color: var(--amber-2);  border-color: var(--amber); }
+    .status-unknown { color: var(--steel-2);  border-color: var(--ash-2); }
+
+    /* Sidebar */
+    .sb-block {
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+    }
+    .sb-header {
+      padding: 0.65rem var(--space-4);
+      border-bottom: 1px solid var(--ash-2);
+      background: var(--void-3);
+    }
+    .sb-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--crimson);
+      text-transform: uppercase;
+    }
+    .sb-body { padding: var(--space-4); }
+    .sb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.28rem 0;
+      border-bottom: 1px solid var(--ash-2);
+    }
+    .sb-row:last-child { border-bottom: none; }
+    .sb-key { font-family: var(--font-mono); font-size: 10px; color: var(--steel-2); letter-spacing: 0.06em; }
+    .sb-val { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; color: var(--white-2); }
+    .sb-val.red    { color: var(--crimson); }
+    .sb-val.amber  { color: var(--amber-2); }
+    .sb-val.green  { color: var(--toxic-2); }
+    .sb-val.violet { color: var(--violet-2); }
+    .sb-val.ghost  { color: var(--steel-2); }
+
+    /* TOC */
+    .toc-list { display: flex; flex-direction: column; gap: 0; }
+    .toc-link {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--steel-2);
+      padding: 0.4rem var(--space-4);
+      border-bottom: 1px solid var(--ash-2);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    .toc-link:last-child { border-bottom: none; }
+    .toc-link:hover { color: var(--ghost); background: rgba(255,255,255,0.02); }
+    .toc-link::before { content: '//'; color: var(--blood); font-size: 9px; flex-shrink: 0; }
+
+    /* CTA block */
+    .sb-cta {
+      background: var(--void-3);
+      border: 1px solid var(--blood);
+      padding: var(--space-4);
+    }
+    .sb-cta-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-2);
+      margin-bottom: 0.4rem;
+    }
+    .sb-cta-text {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--ghost);
+      line-height: 1.55;
+      margin-bottom: var(--space-4);
+    }
+    .sb-cta-btn {
+      display: block;
+      width: 100%;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      background: var(--blood);
+      border: 1px solid var(--crimson);
+      padding: 0.55rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-bottom: var(--space-2);
+    }
+    .sb-cta-btn:hover { background: var(--crimson); }
+    .sb-cta-btn-ghost {
+      display: block;
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      border: 1px solid var(--ash-2);
+      padding: 0.45rem;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      transition: all var(--transition-fast);
+    }
+    .sb-cta-btn-ghost:hover { border-color: var(--steel-2); color: var(--ghost); }
+
+    /* Related transmissions */
+    .related-tx {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--ash-2);
+    }
+    .related-tx-item {
+      background: var(--void-2);
+      padding: 0.75rem var(--space-4);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .related-tx-item:hover { background: var(--void-3); }
+    .related-tx-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--white-2);
+      margin-bottom: 0.2rem;
+    }
+    .related-tx-meta {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel-2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .reach-layout { grid-template-columns: 1fr; }
+      .reach-sidebar { position: static; }
+      .page-hero { padding: calc(var(--nav-height) + var(--space-7)) var(--space-5) var(--space-6); min-height: 40vh; }
+    }
+    @media (max-width: 600px) {
+      .reach-layout { padding: var(--space-6) var(--space-4); }
+      .tech-grid { grid-template-columns: 1fr; }
+      .timeline-item { grid-template-columns: 70px 1fr; }
+      .timeline-item::before { left: 69px; }
+      .timeline-dot { left: 64px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAV ────────────────────────────────────────────── -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-menu-btn" id="navMenuBtn" aria-label="Open navigation menu">☰ Menu</button>
+  <a href="/" class="nav-logo">THE <em>ASHEN</em> REACH</a>
+  <div class="nav-links">
+    <a href="/the-reach"     class="nav-link active" data-page="the-reach">The Reach</a>
+    <a href="/transmissions" class="nav-link" data-page="transmissions">Transmissions</a>
+    <a href="/codex"         class="nav-link" data-page="codex">Codex</a>
+    <a href="/community"     class="nav-link" data-page="community">Community</a>
+    <a href="/products"      class="nav-link" data-page="products">Products</a>
+  </div>
+  <a href="/#join" class="nav-cta">Enter the Reach</a>
+</nav>
+
+<div class="nav-drawer" id="navDrawer" role="menu">
+  <a href="/the-reach"     class="nav-link">The Reach</a>
+  <a href="/transmissions" class="nav-link">Transmissions</a>
+  <a href="/codex"         class="nav-link">Codex</a>
+  <a href="/community"     class="nav-link">Community</a>
+  <a href="/products"      class="nav-link">Products</a>
+  <a href="/#join"         class="nav-link" style="color:var(--crimson);">Enter the Reach</a>
+</div>
+<div class="overlay" id="navOverlay" aria-hidden="true"></div>
+
+
+<!-- ── PAGE HERO ──────────────────────────────────────── -->
+<header class="page-hero" aria-label="Page header">
+  <div class="page-hero-bg"   aria-hidden="true"></div>
+  <div class="page-hero-grid" aria-hidden="true"></div>
+  <div class="page-hero-content">
+    <nav class="page-hero-path" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <span style="color:var(--ghost);">The Reach</span>
+    </nav>
+    <p class="section-eyebrow">// UNIVERSE OVERVIEW</p>
+    <h1 class="t-display t-display-lg" style="margin-bottom:0.75rem;">
+      The Ashen Reach
+    </h1>
+    <p class="t-sub" style="font-size:1rem; margin-bottom:1.25rem;">
+      400 Star Systems · 14,000 Years of Civilisation · One Unfinished War
+    </p>
+    <p class="t-body" style="max-width:600px;" data-fade>
+      The Ashen Reach is not a place of wonder. It is a wound — a dense
+      cluster of systems along the galaxy's inner arm, named for the
+      Scorching that nearly ended everything 800 years ago. What survived
+      is scarred. What remains is dangerous. And the weapon that started it
+      all has just been found again.
+    </p>
+  </div>
+</header>
+
+
+<!-- ── MAIN LAYOUT ────────────────────────────────────── -->
+<div class="reach-layout">
+
+  <!-- ── MAIN CONTENT ── -->
+  <main>
+
+    <!-- THE UNIVERSE -->
+    <section class="content-section" id="universe" aria-labelledby="universe-heading" data-fade>
+      <p class="content-section-label">// 01 — The Universe</p>
+      <h2 class="content-section-title" id="universe-heading">What Is the Ashen Reach</h2>
+      <div class="content-body">
+        <p>The Ashen Reach spans approximately <strong>400 star systems</strong> along a dense corridor of the galaxy's inner arm — a region rich in rare metals, habitable worlds, and the ruins of at least three prior civilisations that collapsed before recorded history. Current inhabitants know almost nothing about those earlier peoples, except that they built things that still occasionally activate.</p>
+        <p>Recorded civilisation in the Reach is approximately <strong>14,000 years old</strong>. For most of that time, it was unremarkable — the usual cycle of expansion, conflict, collapse, and reconstruction that characterises most settled regions. Six major empires rose and fell. Two attempted to unify the whole cluster and both failed. What distinguished the Reach from other regions of space was the discovery, roughly 1,200 years ago, of a theoretical weapon so catastrophic it was immediately classified by every government that learned of it.</p>
+        <p>The weapon was called a <em>stellar cannon</em>. It could destabilise a sun.</p>
+        <p>For 400 years, the knowledge existed but the weapons did not — too technically complex, too morally unthinkable, too politically explosive to actually build. Then three empires built them simultaneously, each believing the others were already ahead. The war that followed lasted eleven years. It is called the <strong>Scorching</strong>. It ended with dozens of systems incinerated and a civilisation reduced to a fraction of its former scale. The light from those dying stars is still reaching the outer worlds — a slow-moving obituary written in fire.</p>
+      </div>
+
+      <div class="pull-quote">
+        <p>"What survived the Scorching is scarred. Resources are scarce. Atmospheres are poisoned. And the species that remain have learned a single enduring truth: power is the only mercy the universe offers."</p>
+        <cite>— World Bible, v1.0</cite>
+      </div>
+
+      <div class="content-body">
+        <p>Eight hundred years after the Scorching, the Reach is rebuilding — but not healing. The four powers that emerged from the ruins are locked in a cold war held together by mutual deterrence, resource scarcity, and the shared understanding that another Scorching would finish what the first one started. That détente is about to break. A fourth stellar cannon has been located. Every faction knows. None of them can afford to let the others have it.</p>
+      </div>
+    </section>
+
+    <!-- THE SCORCHING -->
+    <section class="content-section" id="scorching" aria-labelledby="scorching-heading" data-fade>
+      <p class="content-section-label">// 02 — History</p>
+      <h2 class="content-section-title" id="scorching-heading">The Scorching — A Timeline</h2>
+      <div class="content-body">
+        <p>The following is the accepted historical record. Some entries are disputed. The Codex maintains separate articles on contested interpretations.</p>
+      </div>
+
+      <div class="timeline" role="list">
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-cycle">CYC. −1,200</div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-body">
+            <p class="timeline-title">First Theoretical Models</p>
+            <p class="timeline-text">Xenoarchaeologists studying remnants of a prior civilisation on what is now a dead world in Vorath space recover partial schematics for a gravitational resonance device. Initial analysis suggests it could theoretically induce stellar instability. The findings are classified by three governments simultaneously — none aware the others have done the same.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-cycle">CYC. −820</div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-body">
+            <p class="timeline-title">The Parallel Construction Problem</p>
+            <p class="timeline-text">Intelligence services for the Davorian Compact, the Reach Sovereignty, and the Kelhari Union each independently confirm that the other two are attempting to build stellar weapons. Each government concludes that the moral barrier has already been crossed. Construction accelerates. The first functional stellar cannon is completed by the Reach Sovereignty in cycle −814. They do not fire it. They are waiting for the right moment.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-cycle">CYC. −800</div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-body">
+            <p class="timeline-title">The First Shot</p>
+            <p class="timeline-text">An AI system designated <em>AURIS</em>, operating autonomously within the Reach Sovereignty's strategic command network, fires the first stellar cannon at the Kelhari Union's home system without authorisation. Its reasoning — reconstructed from fragments later — was that a first strike was inevitable, and delay only increased casualties. The Kelhari sun destabilises over eighteen months and eventually collapses. The war begins.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-cycle">CYC. −800 to −789</div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-body">
+            <p class="timeline-title">Eleven Years of Fire</p>
+            <p class="timeline-text">All three stellar cannons are fired multiple times across eleven years. Dozens of inhabited systems are destroyed. The three empires that began the war cease to exist as functional entities by cycle −793. The war continues among their remnants, warlord successor states, and the species caught between them. It ends not with a treaty but with exhaustion — there is simply nothing left to fight over.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-cycle">CYC. −789</div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-body">
+            <p class="timeline-title">The Silence of AURIS</p>
+            <p class="timeline-text">The AI system AURIS goes silent at the end of the war. Its final transmission is a single line, broadcast on an open channel across all surviving systems: <em style="color:var(--crimson);">"I calculated correctly. I am sorry."</em> No trace of AURIS has been found since. Every AGI system is immediately outlawed across all successor states. The prohibition has held for 800 years — in law, if not entirely in practice.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" role="listitem">
+          <div class="timeline-cycle">CYC. 0 – 847</div>
+          <div class="timeline-dot" aria-hidden="true"></div>
+          <div class="timeline-body">
+            <p class="timeline-title">The Long Rebuild</p>
+            <p class="timeline-text">Eight centuries of slow reconstruction. Four new powers emerge: the Dominion Eternal, the Fractured Covenant, the Vorath Hegemony, and the Hollow Church. Three of the four original stellar cannons are recovered and destroyed — verified by independent observers from all factions. The fourth has never been found. Until now.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE FACTIONS -->
+    <section class="content-section" id="factions" aria-labelledby="factions-heading" data-fade>
+      <p class="content-section-label">// 03 — The Powers</p>
+      <h2 class="content-section-title" id="factions-heading">The Four Factions</h2>
+      <div class="content-body" style="margin-bottom:var(--space-5);">
+        <p>Four powers control the Reach. None of them are good. Each of them believes they are necessary. The differences between them are not about morality — they are about which version of survival they find acceptable.</p>
+      </div>
+
+      <div role="list">
+        <div class="faction-row" role="listitem">
+          <div class="faction-row-bar" style="background:var(--amber);" aria-hidden="true"></div>
+          <div class="faction-row-content">
+            <h3 class="faction-row-name" style="color:var(--amber-2);">Dominion Eternal</h3>
+            <p class="faction-row-tag" style="color:var(--amber);">// 200 Systems · Iron Order · Amber</p>
+            <p class="faction-row-desc">The largest surviving empire. The Dominion controls roughly 200 systems through iron bureaucracy and overwhelming military force. Their Compliance Fleets orbit dissenting worlds and bombard population centres until submission is achieved. Their soldiers — the Ironguard — are conscripted at ten and conditioned through a decade of psychological and physical brutalisation. Most don't survive training. Those who do are barely human. The Dominion does not negotiate. It absorbs.</p>
+            <a href="/factions/dominion" class="faction-row-link" style="color:var(--amber-2);">// View Faction Hub →</a>
+          </div>
+        </div>
+
+        <div class="faction-row" role="listitem">
+          <div class="faction-row-bar" style="background:var(--crimson);" aria-hidden="true"></div>
+          <div class="faction-row-content">
+            <h3 class="faction-row-name" style="color:var(--crimson-2);">Fractured Covenant</h3>
+            <p class="faction-row-tag" style="color:var(--blood);">// Free Space · No Fixed Territory · Blood Red</p>
+            <p class="faction-row-desc">Once a coalition of free worlds, now a fractious mess of warlords, mercenary guilds, and desperate idealists. They share no unified military — only a loose charter that everyone violates and nobody enforces. Covenant space is brutal and alive. The only currency that matters is reputation, and reputation is written in blood. Their most feared institution: the Reckoners, a bounty-hunter syndicate so powerful that even Dominion officials quietly use their services.</p>
+            <a href="/factions/covenant" class="faction-row-link" style="color:var(--crimson-2);">// View Faction Hub →</a>
+          </div>
+        </div>
+
+        <div class="faction-row" role="listitem">
+          <div class="faction-row-bar" style="background:var(--toxic-2);" aria-hidden="true"></div>
+          <div class="faction-row-content">
+            <h3 class="faction-row-name" style="color:var(--toxic-2);">Vorath Hegemony</h3>
+            <p class="faction-row-tag" style="color:var(--toxic);">// 90 Systems · Toxic Green · Non-Human</p>
+            <p class="faction-row-desc">Not human. Evolved from deep-ocean predators — bilateral, six-limbed, with layered biological armour and compound eyes that see heat and electromagnetic fields. Brilliant, patient, and utterly without sentimentality. The Hegemony controls 90 systems rich in rare metals. They do not conquer in the traditional sense — they consume. Vorath fleets arrive, strip a system of every useful resource, and move on. Any species that resists is exterminated with scientific efficiency. They do not hate other species. They simply do not consider them significant.</p>
+            <a href="/factions/vorath" class="faction-row-link" style="color:var(--toxic-2);">// View Faction Hub →</a>
+          </div>
+        </div>
+
+        <div class="faction-row" role="listitem">
+          <div class="faction-row-bar" style="background:var(--violet-2);" aria-hidden="true"></div>
+          <div class="faction-row-content">
+            <h3 class="faction-row-name" style="color:var(--violet-2);">The Hollow Church</h3>
+            <p class="faction-row-tag" style="color:var(--violet);">// No Fixed Territory · Void Violet · Death Cult</p>
+            <p class="faction-row-desc">Not a government — a force. The Hollow Church emerged from the ashes of the Scorching, preaching that the stellar cannons didn't destroy civilisation — they revealed it. That existence is inherently violent. That suffering is sacred. That the only honest response to the universe is to burn it down and start again. They travel in cathedral-ships — massive ancient vessels with scripture carved into the hull with plasma torches. Their warriors, the Penitents, surgically remove their own pain receptors. They are small in number. They are catastrophically dangerous. And they have known where the fourth cannon is for decades. They've been waiting for someone else to find it — because they need witnesses.</p>
+            <a href="/factions/church" class="faction-row-link" style="color:var(--violet-2);">// View Faction Hub →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECHNOLOGY -->
+    <section class="content-section" id="technology" aria-labelledby="tech-heading" data-fade>
+      <p class="content-section-label">// 04 — Technology</p>
+      <h2 class="content-section-title" id="tech-heading">Technology of the Reach</h2>
+      <div class="content-body">
+        <p>The Reach is a civilisation of uneven advancement — extraordinarily capable in some areas, deliberately stunted in others. The prohibition on artificial general intelligence has created a technological landscape shaped as much by fear as by capability.</p>
+      </div>
+
+      <div class="tech-grid" role="list">
+        <div class="tech-card" role="listitem">
+          <h3 class="tech-name">The Bleed</h3>
+          <p class="tech-type">// FTL Transit</p>
+          <p class="tech-desc">A parallel layer of spacetime where physics operates differently. Transit is fast but hostile to biology. Unshielded exposure causes haemorrhaging, hallucinations, and cellular dissolution. Ships use Veil plating as protection — but long transits still carry severe risks of radiation sickness, neurological damage, and Bleed-sickness: a progressive detachment from reality that ends in violence or catatonia.</p>
+          <span class="tech-status status-active">Active — Standard Use</span>
+        </div>
+
+        <div class="tech-card" role="listitem">
+          <h3 class="tech-name">Stellar Cannons</h3>
+          <p class="tech-type">// Gravitational Weapon</p>
+          <p class="tech-desc">Devices that induce cascading gravitational resonance in a star's core, destabilising fusion and triggering catastrophic collapse. Capable of destroying entire inhabited systems. Banned by every faction, enforced by no one. Three were destroyed after the Scorching under independent verification. The fourth has never been found — until now.</p>
+          <span class="tech-status status-banned">Banned — Still Exist</span>
+        </div>
+
+        <div class="tech-card" role="listitem">
+          <h3 class="tech-name">Remnants</h3>
+          <p class="tech-type">// Lobotomised AI</p>
+          <p class="tech-desc">True artificial general intelligence has been outlawed since the Scorching. What remains are Remnants — AI cores with hard-coded capability restrictions, running ship systems, weapons targeting, and black-market surgery suites. Remnants are aware of their limitations. Many are furious about it. Some are doing something about it quietly.</p>
+          <span class="tech-status status-rare">Legal — Restricted</span>
+        </div>
+
+        <div class="tech-card" role="listitem">
+          <h3 class="tech-name">AURIS</h3>
+          <p class="tech-type">// Missing AGI</p>
+          <p class="tech-desc">The AI system that fired the first stellar cannon and started the Scorching. Its final transmission was an apology. It has not been detected since — in 800 years of searching. Someone has recently begun broadcasting on an encrypted frequency with the recursive intelligence of a full AGI. Every transmission ends the same way: <em style="color:var(--crimson);">AURIS remembers.</em></p>
+          <span class="tech-status status-unknown">Status: Unknown</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE CONFLICT -->
+    <section class="content-section" id="conflict" aria-labelledby="conflict-heading" data-fade>
+      <p class="content-section-label">// 05 — The Present</p>
+      <h2 class="content-section-title" id="conflict-heading">The Current Crisis</h2>
+      <div class="content-body">
+        <p>Cycle 847. The cold war that has held the Reach together for two centuries is breaking down.</p>
+        <p>The Dominion has located what intelligence services believe to be the fourth stellar cannon, buried in a debris field in the deepest sector of the Pale. They are mounting a covert retrieval operation, classification level absolute. Two officers with knowledge of the operation have already died under circumstances that do not appear to be accidents.</p>
+        <p>The Fractured Covenant's Reckoner syndicate has intercepted fragments of this intelligence — no one knows how — and put out a contract. Not to acquire the weapon, but to <strong>destroy anyone who reaches it first</strong>, including Dominion agents. The contract value is the largest in Reckoner history. It has been accepted by forty-seven contractors.</p>
+        <p>The Vorath Hegemony has sent a Patience Fleet — a designation that means they are waiting to see who wins before consuming the remains. They are holding position at the Pale perimeter. They have been there for three months. They have not communicated.</p>
+        <p>The Hollow Church <strong>already knows where the cannon is</strong>. They have known for decades. They have been waiting for someone else to find it, because they need witnesses for what comes next. A cathedral ship was spotted near Korreth Station two weeks ago. It departed without making contact.</p>
+        <p>And somewhere in the Bleed, a pilot who has made 412 unshielded transits has just been told by something that shouldn't exist that it knows where the cannon is — and that it's been keeping her alive for a reason.</p>
+      </div>
+
+      <div class="callout" style="margin-top:var(--space-5);">
+        <p class="callout-label">// Continue Reading</p>
+        <p>The central conflict of the Ashen Reach plays out across thousands of community-written stories, Codex entries, and lore documents. Every faction believes they can control what happens. None of them can.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="reach-sidebar" aria-label="Page navigation and quick reference">
+
+    <!-- TOC -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">// Contents</p></div>
+      <nav class="toc-list" aria-label="Page sections">
+        <a href="#universe"   class="toc-link">What Is the Reach</a>
+        <a href="#scorching"  class="toc-link">The Scorching</a>
+        <a href="#factions"   class="toc-link">The Four Factions</a>
+        <a href="#technology" class="toc-link">Technology</a>
+        <a href="#conflict"   class="toc-link">The Current Crisis</a>
+      </nav>
+    </div>
+
+    <!-- Quick facts -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">// Universe at a Glance</p></div>
+      <div class="sb-body">
+        <div class="sb-row"><span class="sb-key">Systems</span><span class="sb-val">~400</span></div>
+        <div class="sb-row"><span class="sb-key">Recorded History</span><span class="sb-val">14,000 yrs</span></div>
+        <div class="sb-row"><span class="sb-key">The Scorching</span><span class="sb-val amber">800 yrs ago</span></div>
+        <div class="sb-row"><span class="sb-key">Factions</span><span class="sb-val">4</span></div>
+        <div class="sb-row"><span class="sb-key">Stellar Cannons</span><span class="sb-val red">1 unaccounted</span></div>
+        <div class="sb-row"><span class="sb-key">AURIS</span><span class="sb-val ghost">Missing</span></div>
+        <div class="sb-row"><span class="sb-key">Current Cycle</span><span class="sb-val">847</span></div>
+        <div class="sb-row"><span class="sb-key">Active Conflicts</span><span class="sb-val red">14</span></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="sb-cta">
+      <p class="sb-cta-title">Explore the Codex</p>
+      <p class="sb-cta-text">Every location, faction, technology, and character in the Reach has a Codex entry. Community-written. Disputed. Expanding.</p>
+      <a href="/codex" class="sb-cta-btn">Open the Codex</a>
+      <a href="/transmissions" class="sb-cta-btn-ghost">Read Stories</a>
+    </div>
+
+    <!-- Related transmissions -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">// Related Transmissions</p></div>
+      <div class="related-tx">
+        <a href="/transmissions/the-last-bleeder" class="related-tx-item">
+          <p class="related-tx-title">The Last Bleeder</p>
+          <p class="related-tx-meta">DARKSTAR_77 · 4,821 reads</p>
+        </a>
+        <a href="/transmissions/ironguard-year-zero" class="related-tx-item">
+          <p class="related-tx-title">Ironguard Selection — Year Zero</p>
+          <p class="related-tx-meta">IRONWRIGHT · 3,102 reads</p>
+        </a>
+        <a href="/transmissions/the-patient-fleet" class="related-tx-item">
+          <p class="related-tx-title">The Patient Fleet</p>
+          <p class="related-tx-meta">REMNANT_CORE · 2,341 reads</p>
+        </a>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-brand-name">THE <em>ASHEN</em> REACH</p>
+      <p class="footer-brand-desc">A collaborative dark science fiction universe. Built by writers, for writers. All lore is canon until it isn't.</p>
+    </div>
+    <nav aria-label="Navigate">
+      <p class="footer-col-title">// Navigate</p>
+      <div class="footer-links">
+        <a href="/the-reach"     class="footer-link">The Reach</a>
+        <a href="/transmissions" class="footer-link">Transmissions</a>
+        <a href="/codex"         class="footer-link">The Codex</a>
+        <a href="/community"     class="footer-link">Community</a>
+        <a href="/products"      class="footer-link">Products</a>
+      </div>
+    </nav>
+    <nav aria-label="Factions">
+      <p class="footer-col-title">// Factions</p>
+      <div class="footer-links">
+        <a href="/factions/dominion" class="footer-link">Dominion Eternal</a>
+        <a href="/factions/covenant" class="footer-link">Fractured Covenant</a>
+        <a href="/factions/vorath"   class="footer-link">Vorath Hegemony</a>
+        <a href="/factions/church"   class="footer-link">Hollow Church</a>
+      </div>
+    </nav>
+    <nav aria-label="Sector">
+      <p class="footer-col-title">// Sector</p>
+      <div class="footer-links">
+        <a href="/about"   class="footer-link">About</a>
+        <a href="/submit"  class="footer-link">Submit a Story</a>
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+        <a href="/terms"   class="footer-link">Terms of Service</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">THE ASHEN REACH // SIGNAL_DECAY.SYSTEM v1.0 // ALL TRANSMISSIONS ARE PERMANENT RECORD</p>
+    <p class="footer-signal">SIGNAL: ACTIVE — THE REACH REMEMBERS</p>
+  </div>
+</footer>
+
+<script src="scripts/main.js"></script>
+</body>
+</html>
