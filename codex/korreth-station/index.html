@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Korreth Station — Codex | The Ashen Reach</title>
+  <meta name="description" content="A decommissioned Vorath harvester ship converted into the Reach's only neutral station. Hangs in the gravitational dead zone between two dead stars. Run by criminal guilds. People go here to vanish.">
+  <link rel="canonical" href="https://theashenreach.com/codex/korreth-station">
+
+  <meta property="og:type"        content="article">
+  <meta property="og:url"         content="https://theashenreach.com/codex/korreth-station">
+  <meta property="og:title"       content="Korreth Station — Codex | The Ashen Reach">
+  <meta property="og:description" content="The Reach's only neutral ground. Run by criminal guilds. People go here to vanish. Some manage it.">
+  <meta property="og:image"       content="https://theashenreach.com/assets/og-image.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Korreth Station",
+    "description": "A decommissioned Vorath harvester ship converted into the Reach's only neutral station.",
+    "url": "https://theashenreach.com/codex/korreth-station",
+    "isPartOf": { "@type": "WebSite", "name": "The Ashen Reach Codex", "url": "https://theashenreach.com/codex" },
+    "publisher": { "@type": "Organization", "name": "The Ashen Reach", "url": "https://theashenreach.com" }
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><circle cx='16' cy='16' r='12' fill='none' stroke='%238b0000' stroke-width='1.5'/><circle cx='16' cy='16' r='4' fill='%23cc1a1a'/></svg>">
+  <link rel="stylesheet" href="../../styles/signal-decay.css">
+
+  <style>
+    /* ══ ENTRY HEADER ══════════════════════════════════════ */
+    .entry-header {
+      background: var(--void-2);
+      border-bottom: 1px solid var(--ash-2);
+      padding: calc(var(--nav-height) + var(--space-7)) var(--space-5) var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .entry-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(255,255,255,0.007) 3px, rgba(255,255,255,0.007) 4px
+      );
+      pointer-events: none;
+    }
+    .entry-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--blood), transparent 70%);
+    }
+    .entry-header-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .breadcrumb a { color: var(--steel-2); transition: color var(--transition-fast); }
+    .breadcrumb a:hover { color: var(--ghost); }
+    .breadcrumb span { color: var(--blood); }
+
+    /* Meta row */
+    .entry-meta-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-4);
+    }
+    .entry-type-badge {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      border: 1px solid var(--ash-2);
+      padding: 2px 8px;
+    }
+    .entry-id-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--blood);
+    }
+    .entry-tags { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-left: auto; }
+
+    /* Title block */
+    .entry-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .entry-subtitle {
+      font-family: var(--font-display);
+      font-size: clamp(0.75rem, 2vw, 0.95rem);
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      margin-bottom: var(--space-4);
+    }
+    .entry-summary {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--ghost);
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    /* Stats strip */
+    .entry-stats {
+      display: flex;
+      gap: var(--space-6);
+      margin-top: var(--space-5);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--ash-2);
+      flex-wrap: wrap;
+    }
+    .entry-stat { display: flex; flex-direction: column; gap: 2px; }
+    .entry-stat-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; color: var(--steel); text-transform: uppercase; }
+    .entry-stat-val   { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--white-2); }
+    .entry-stat-val.red    { color: var(--crimson); }
+    .entry-stat-val.amber  { color: var(--amber-2); }
+    .entry-stat-val.green  { color: var(--toxic-2); }
+    .entry-stat-val.ghost  { color: var(--steel-2); }
+    .entry-stat-val.violet { color: var(--violet-2); }
+
+    /* ══ LAYOUT ════════════════════════════════════════════ */
+    .entry-layout {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-7) var(--space-5);
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: var(--space-7);
+      align-items: start;
+    }
+
+    /* ══ MAIN BODY ═════════════════════════════════════════ */
+    .entry-body {}
+
+    /* TOC */
+    .toc {
+      background: var(--void-3);
+      border: 1px solid var(--ash-2);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+    .toc-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .toc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.2rem var(--space-4);
+    }
+    .toc-item {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--steel-2);
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      padding: 0.2rem 0;
+      text-decoration: none;
+    }
+    .toc-item:hover { color: var(--ghost); }
+    .toc-item::before {
+      content: '';
+      display: inline-block;
+      width: 14px; height: 1px;
+      background: var(--blood);
+      flex-shrink: 0;
+    }
+
+    /* Content sections */
+    .c-section { margin-bottom: var(--space-7); scroll-margin-top: calc(var(--nav-height) + var(--space-4)); }
+    .c-section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .c-section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--blood);
+      margin-bottom: var(--space-5);
+    }
+    .c-body {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--ghost);
+      line-height: 1.8;
+    }
+    .c-body p { margin-bottom: 1rem; }
+    .c-body p:last-child { margin-bottom: 0; }
+    .c-body strong { color: var(--white); font-weight: 600; }
+    .c-body em     { color: var(--amber-2); font-style: normal; }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 2px solid var(--blood);
+      padding: var(--space-4) var(--space-5);
+      margin: var(--space-5) 0;
+      background: rgba(139,0,0,0.04);
+    }
+    .pull-quote p {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--white-2);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+      font-style: italic;
+      margin: 0;
+    }
+    .pull-quote cite {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--steel-2);
+      letter-spacing: 0.1em;
+      margin-top: var(--space-3);
+      font-style: normal;
+    }
+
+    /* Data table */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: var(--space-4) 0; }
+    .data-table { width: 100%; border-collapse: collapse; min-width: 380px; }
+    .data-table th {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      text-align: left;
+      padding: 0.45rem 0.75rem;
+      border-bottom: 1px solid var(--blood);
+      font-weight: 400;
+    }
+    .data-table td {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      padding: 0.55rem 0.75rem;
+      border-bottom: 1px solid var(--ash-2);
+    }
+    .data-table tr:hover td { background: rgba(255,255,255,0.015); }
+    .data-table td.key {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--steel-2);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .data-table td.val-w { color: var(--white); }
+    .data-table td.val-r { color: var(--ember); }
+    .data-table td.val-a { color: var(--amber-2); }
+    .data-table td.val-g { color: var(--steel-2); }
+
+    /* Faction presence bar */
+    .faction-presence {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin: var(--space-4) 0;
+    }
+    .fp-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 0.6rem var(--space-4);
+      border: 1px solid var(--ash-2);
+      background: var(--void-2);
+    }
+    .fp-dot { width: 8px; height: 8px; flex-shrink: 0; }
+    .fp-name {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex: 1;
+    }
+    .fp-status {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border: 1px solid;
+    }
+    .fp-desc {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--ghost);
+      width: 100%;
+      margin-top: 0.2rem;
+    }
+    .fp-row-inner { display: flex; flex-direction: column; flex: 1; gap: 0.2rem; }
+    .fp-row-top   { display: flex; align-items: center; gap: var(--space-3); }
+
+    /* Linked entries */
+    .linked-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--ash-2);
+      margin-top: var(--space-3);
+    }
+    .linked-card {
+      background: var(--void-2);
+      padding: var(--space-4);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      text-decoration: none;
+      display: block;
+    }
+    .linked-card:hover { background: var(--void-3); }
+    .linked-cat   { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; color: var(--steel-2); text-transform: uppercase; margin-bottom: 0.25rem; }
+    .linked-name  { font-family: var(--font-display); font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--white-2); margin-bottom: 0.2rem; }
+    .linked-desc  { font-family: var(--font-body); font-size: 0.85rem; color: var(--ghost); line-height: 1.45; }
+    .linked-arrow { font-family: var(--font-mono); font-size: 9px; color: var(--blood); margin-top: 0.4rem; letter-spacing: 0.1em; }
+
+    /* ══ RIGHT SIDEBAR ═════════════════════════════════════ */
+    .entry-sidebar {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-4));
+    }
+    .sb-block {
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+    }
+    .sb-header {
+      padding: 0.65rem var(--space-4);
+      border-bottom: 1px solid var(--ash-2);
+      background: var(--void-3);
+    }
+    .sb-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--crimson);
+      text-transform: uppercase;
+    }
+    .sb-body { padding: var(--space-3) var(--space-4); }
+    .sb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid var(--ash-2);
+    }
+    .sb-row:last-child { border-bottom: none; }
+    .sb-key { font-family: var(--font-mono); font-size: 10px; color: var(--steel-2); letter-spacing: 0.06em; }
+    .sb-val { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; color: var(--white-2); }
+    .sb-val.red    { color: var(--crimson); }
+    .sb-val.amber  { color: var(--amber-2); }
+    .sb-val.green  { color: var(--toxic-2); }
+    .sb-val.ghost  { color: var(--steel-2); }
+    .sb-val.violet { color: var(--violet-2); }
+
+    /* Map placeholder */
+    .sb-map {
+      height: 110px;
+      background: var(--void-3);
+      border-bottom: 1px solid var(--ash-2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sb-map::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139,0,0,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,0,0,0.06) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .sb-map-inner { position: relative; z-index: 1; text-align: center; }
+    .sb-map-coord {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--crimson);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .sb-map-dot {
+      width: 8px; height: 8px;
+      background: var(--crimson);
+      margin: var(--space-2) auto 0;
+      animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    /* Actions */
+    .sb-action {
+      display: block;
+      width: 100%;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      border: 1px solid var(--ash-2);
+      padding: 0.42rem 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: transparent;
+      margin-bottom: var(--space-2);
+      text-decoration: none;
+    }
+    .sb-action:hover    { border-color: var(--steel-2); color: var(--ghost); }
+    .sb-action.primary  { color: var(--crimson); border-color: var(--blood); }
+    .sb-action.primary:hover { background: var(--blood); color: var(--white-2); }
+
+    /* Contributors */
+    .contrib-list { display: flex; flex-direction: column; gap: var(--space-2); }
+    .contrib-row  { display: flex; justify-content: space-between; align-items: center; }
+    .contrib-name { font-family: var(--font-mono); font-size: 10px; color: var(--ghost); letter-spacing: 0.05em; }
+    .contrib-cycle { font-family: var(--font-mono); font-size: 9px; color: var(--steel-2); }
+
+    /* ══ DISPUTE NOTICE ════════════════════════════════════ */
+    .dispute-notice {
+      background: rgba(196,122,26,0.06);
+      border: 1px solid var(--amber);
+      border-left: 2px solid var(--amber-2);
+      padding: var(--space-4) var(--space-5);
+      margin-bottom: var(--space-6);
+    }
+    .dispute-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber-2);
+      margin-bottom: var(--space-2);
+    }
+    .dispute-text {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.6;
+    }
+    .dispute-text a { color: var(--amber-2); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ══ RESPONSIVE ════════════════════════════════════════ */
+    @media (max-width: 860px) {
+      .entry-layout  { grid-template-columns: 1fr; }
+      .entry-sidebar { position: static; }
+      .toc-grid      { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .entry-header  { padding: calc(var(--nav-height) + var(--space-5)) var(--space-4) var(--space-5); }
+      .entry-layout  { padding: var(--space-5) var(--space-4); gap: var(--space-5); }
+      .entry-stats   { gap: var(--space-4); }
+      .linked-grid   { grid-template-columns: 1fr; }
+      .entry-tags    { margin-left: 0; width: 100%; }
+      .entry-meta-row { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAV ────────────────────────────────────────────── -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-menu-btn" id="navMenuBtn" aria-label="Open navigation menu">☰ Menu</button>
+  <a href="/" class="nav-logo">THE <em>ASHEN</em> REACH</a>
+  <div class="nav-links">
+    <a href="/the-reach"     class="nav-link" data-page="the-reach">The Reach</a>
+    <a href="/transmissions" class="nav-link" data-page="transmissions">Transmissions</a>
+    <a href="/codex"         class="nav-link active" data-page="codex">Codex</a>
+    <a href="/community"     class="nav-link" data-page="community">Community</a>
+    <a href="/products"      class="nav-link" data-page="products">Products</a>
+  </div>
+  <a href="/#join" class="nav-cta">Enter the Reach</a>
+</nav>
+<div class="nav-drawer" id="navDrawer" role="menu">
+  <a href="/the-reach"     class="nav-link">The Reach</a>
+  <a href="/transmissions" class="nav-link">Transmissions</a>
+  <a href="/codex"         class="nav-link">Codex</a>
+  <a href="/community"     class="nav-link">Community</a>
+  <a href="/products"      class="nav-link">Products</a>
+  <a href="/#join"         class="nav-link" style="color:var(--crimson);">Enter the Reach</a>
+</div>
+<div class="overlay" id="navOverlay" aria-hidden="true"></div>
+
+
+<!-- ── ENTRY HEADER ───────────────────────────────────── -->
+<header class="entry-header">
+  <div class="entry-header-inner">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <a href="/codex">Codex</a><span>/</span>
+      <a href="/codex#locations">Locations</a><span>/</span>
+      <span style="color:var(--ghost);">Korreth Station</span>
+    </nav>
+
+    <div class="entry-meta-row">
+      <span class="entry-type-badge">Location · Station</span>
+      <span class="entry-id-label">// LOC-0012</span>
+      <div class="entry-tags">
+        <span class="badge badge-neutral">Neutral Zone</span>
+        <span class="badge badge-covenant">Covenant Adjacent</span>
+        <span class="badge badge-danger">High Risk</span>
+      </div>
+    </div>
+
+    <h1 class="entry-title">Korreth Station</h1>
+    <p class="entry-subtitle">The Hanging City · Neutral Ground · Dead Zone Border</p>
+    <p class="entry-summary">
+      A decommissioned Vorath harvester ship, centuries old, seized during
+      the last Covenant-Hegemony conflict and converted into the Reach's
+      only truly neutral station. Korreth hangs in the gravitational dead
+      zone between two dead stars. It is run by a rotating council of
+      criminal guilds. Every faction maintains a presence here. People go
+      to Korreth to vanish.
+    </p>
+
+    <div class="entry-stats" role="list">
+      <div class="entry-stat" role="listitem">
+        <span class="entry-stat-label">Designation</span>
+        <span class="entry-stat-val">KOR-NULL</span>
+      </div>
+      <div class="entry-stat" role="listitem">
+        <span class="entry-stat-label">Status</span>
+        <span class="entry-stat-val amber">Active</span>
+      </div>
+      <div class="entry-stat" role="listitem">
+        <span class="entry-stat-label">Threat Level</span>
+        <span class="entry-stat-val red">Moderate–High</span>
+      </div>
+      <div class="entry-stat" role="listitem">
+        <span class="entry-stat-label">Origin</span>
+        <span class="entry-stat-val green">Vorath Hardware</span>
+      </div>
+      <div class="entry-stat" role="listitem">
+        <span class="entry-stat-label">Control</span>
+        <span class="entry-stat-val ghost">Guild Council</span>
+      </div>
+      <div class="entry-stat" role="listitem">
+        <span class="entry-stat-label">Population</span>
+        <span class="entry-stat-val">~180,000</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ── ENTRY LAYOUT ───────────────────────────────────── -->
+<div class="entry-layout">
+
+  <!-- ── MAIN BODY ── -->
+  <main class="entry-body">
+
+    <!-- Dispute notice -->
+    <div class="dispute-notice" role="alert">
+      <p class="dispute-label">⚑ Disputed Entry — 2 Open Challenges</p>
+      <p class="dispute-text">
+        The circumstances of Korreth's seizure in Cycle 801 are actively
+        disputed. See the
+        <a href="#history">History &amp; Origin</a> section for both
+        accounts. Vorath tactical analysis suggests the abandonment was
+        deliberate. The Covenant maintains otherwise.
+      </p>
+    </div>
+
+    <!-- TOC -->
+    <nav class="toc" aria-label="Entry contents">
+      <p class="toc-title">Contents</p>
+      <div class="toc-grid">
+        <a class="toc-item" href="#history">History &amp; Origin</a>
+        <a class="toc-item" href="#structure">Structure &amp; Layout</a>
+        <a class="toc-item" href="#factions">Factions Present</a>
+        <a class="toc-item" href="#guild-council">The Guild Council</a>
+        <a class="toc-item" href="#notable">Notable Locations</a>
+        <a class="toc-item" href="#threat">Threat Assessment</a>
+        <a class="toc-item" href="#related">Related Entries</a>
+      </div>
+    </nav>
+
+    <!-- SECTION 01 — HISTORY -->
+    <section class="c-section" id="history" aria-labelledby="history-heading">
+      <p class="c-section-eyebrow">// 01</p>
+      <h2 class="c-section-title" id="history-heading">History &amp; Origin</h2>
+      <div class="c-body">
+        <p>Korreth was originally designated <em>VH-Harvester-Class-7</em>, an autonomous Vorath resource processing ship approximately <strong>14 kilometres in length</strong>. It operated in what is now Covenant free space for an estimated 200 years before being disabled and boarded during the Third Covenant-Hegemony Engagement — one of the few military actions the Covenant can claim as a genuine victory, though historians continue to dispute whether the Vorath abandoned the ship intentionally.</p>
+        <p>The seizure was celebrated across the Covenant as proof that the Hegemony could be wounded. Within a decade, the ship had been gutted of its harvesting equipment and partially converted to habitation. What no one anticipated was how quickly the conversion would become permanent — and how quickly the wrong kind of people would follow.</p>
+      </div>
+
+      <div class="callout callout-amber">
+        <p class="callout-label">⚑ Disputed — Vorath Abandonment Theory</p>
+        <p>Vorath tactical analysts, sourced through Remnant intelligence intercepts, suggest the harvester was deliberately abandoned as a strategic concession to prevent escalation of the Third Engagement. If accurate, the Covenant's celebrated "seizure" was permitted. Korreth's neutrality may have been the Hegemony's design from the beginning — a useful neutral space they could observe without controlling. The Vorath have never commented.</p>
+      </div>
+
+      <div class="c-body">
+        <p>Within 30 years of the conversion, Korreth had become the de facto neutral trading post for the entire Reach. Its position in a <strong>gravitational dead zone</strong> — unreachable without a Bleed transit — made it naturally difficult to police. The guilds moved in. The diplomats followed. The criminals arrived first, as they always do.</p>
+        <p>Over the following centuries, Korreth accumulated layers of modification, expansion, and structural improvisation. The original Vorath superstructure — still intact in the upper levels — supports an entirely human-built lower third of the station that no survey has ever fully mapped. Structural engineers who have attempted comprehensive audits have consistently reported either giving up, getting lost, or finding things they weren't supposed to find.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 02 — STRUCTURE -->
+    <section class="c-section" id="structure" aria-labelledby="structure-heading">
+      <p class="c-section-eyebrow">// 02</p>
+      <h2 class="c-section-title" id="structure-heading">Structure &amp; Layout</h2>
+      <div class="c-body">
+        <p>Korreth retains most of its original Vorath architecture in the upper two-thirds — hexagonal corridors, bioluminescent material guides still faintly active after centuries, and processing chambers repurposed as market halls. The scale is inhuman: ceilings in the original sections rise 18 to 24 metres, designed for six-limbed beings considerably larger than humans. The lower third is entirely human-built — decades of improvised habitation stacked over the original Vorath superstructure.</p>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" aria-label="Korreth Station zone breakdown">
+          <thead>
+            <tr>
+              <th>Zone</th>
+              <th>Levels</th>
+              <th>Control</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="key">Upper Market</td><td>1–4</td>   <td class="val-w">Guild Council</td>      <td class="val-a">Stable</td></tr>
+            <tr><td class="key">Embassy District</td><td>5–6</td><td class="val-w">Multi-faction</td>     <td class="val-a">Tense</td></tr>
+            <tr><td class="key">Transit Docks</td><td>7–8</td>  <td class="val-w">Reckoner-Enforced</td> <td>Operational</td></tr>
+            <tr><td class="key">Mid Decks</td><td>9–14</td>     <td class="val-w">Contested</td>          <td class="val-r">Volatile</td></tr>
+            <tr><td class="key">Lower Decks</td><td>15–22</td>  <td class="val-w">Unknown</td>            <td class="val-r">Avoid</td></tr>
+            <tr><td class="key">Original Core</td><td>Sub-0</td><td class="val-g">Sealed</td>             <td class="val-g">Access Denied</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <p class="callout-label">// Structural Warning — Cycle 847</p>
+        <p>Levels 19–22 are structurally compromised. Three section collapses recorded this cycle. Guild Council has not authorised repairs. Stated reason: budget allocation dispute between the Mid-Deck Merchant Collective and the Bleed Pilots' Syndicate. Actual reason: unknown.</p>
+      </div>
+
+      <div class="c-body">
+        <p>The <strong>Original Core</strong> — the Vorath ship's primary processing chamber, located below the lowest human-habitable level — has been sealed since Cycle 120. Attempts to force entry have uniformly resulted in equipment failure, power outages across adjacent sections, and, on three occasions, the disappearance of the engineering teams sent to investigate. Guild Council policy classifies it as a structural hazard. Most Korreth inhabitants treat it as something else entirely.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 03 — FACTIONS -->
+    <section class="c-section" id="factions" aria-labelledby="factions-heading">
+      <p class="c-section-eyebrow">// 03</p>
+      <h2 class="c-section-title" id="factions-heading">Factions Present</h2>
+      <div class="c-body" style="margin-bottom:var(--space-4);">
+        <p>Korreth's neutrality is maintained not through treaty but through mutual deterrence. Every faction knows that the first to violate the station's peace destroys the only genuinely neutral ground in the Reach — and the intelligence pipeline it provides to all of them simultaneously.</p>
+      </div>
+
+      <div class="faction-presence" role="list">
+        <div class="fp-row" role="listitem">
+          <div class="fp-dot" style="background:var(--amber);" aria-hidden="true"></div>
+          <div class="fp-row-inner">
+            <div class="fp-row-top">
+              <span class="fp-name" style="color:var(--amber-2);">Dominion Eternal</span>
+              <span class="fp-status" style="color:var(--ghost);border-color:var(--ash-2);">Covert Embassy</span>
+            </div>
+            <span class="fp-desc">Officially denied. Universally known. Level 5, Embassy District. Three known Dominion intelligence operatives maintain permanent residency under cover identities. At least two additional unknown operatives are presumed active. The Dominion uses Korreth as a listening post and a back channel for communications they cannot send through official channels.</span>
+          </div>
+        </div>
+        <div class="fp-row" role="listitem">
+          <div class="fp-dot" style="background:var(--crimson);" aria-hidden="true"></div>
+          <div class="fp-row-inner">
+            <div class="fp-row-top">
+              <span class="fp-name" style="color:var(--crimson-2);">Fractured Covenant</span>
+              <span class="fp-status" style="color:var(--toxic-2);border-color:var(--toxic);">Active Presence</span>
+            </div>
+            <span class="fp-desc">The most visible faction on Korreth. Three of the seven Guild Council seats are held by Covenant-aligned guild representatives. The Reckoner Syndicate maintains its primary Korreth office in the Transit Docks. Covenant free-traders make up the majority of the station's commercial traffic.</span>
+          </div>
+        </div>
+        <div class="fp-row" role="listitem">
+          <div class="fp-dot" style="background:var(--toxic-2);" aria-hidden="true"></div>
+          <div class="fp-row-inner">
+            <div class="fp-row-top">
+              <span class="fp-name" style="color:var(--toxic-2);">Vorath Hegemony</span>
+              <span class="fp-status" style="color:var(--amber-2);border-color:var(--amber);">Observation Only</span>
+            </div>
+            <span class="fp-desc">Vorath observers have been documented in the Upper Market zone on three confirmed occasions in the past decade. Their purpose has not been established. They do not trade, communicate, or respond to contact attempts. They observe, catalogue, and leave. Whether this constitutes a permanent intelligence operation or periodic assessment is unknown.</span>
+          </div>
+        </div>
+        <div class="fp-row" role="listitem">
+          <div class="fp-dot" style="background:var(--violet-2);" aria-hidden="true"></div>
+          <div class="fp-row-inner">
+            <div class="fp-row-top">
+              <span class="fp-name" style="color:var(--violet-2);">The Hollow Church</span>
+              <span class="fp-status" style="color:var(--ember);border-color:var(--crimson);">Unconfirmed</span>
+            </div>
+            <span class="fp-desc">A cathedral ship matching known Hollow Church configuration signatures was detected holding position at extreme sensor range from Korreth during Cycle 843. It held position for eleven days and departed without making contact or identifying itself. Guild Council has not publicly acknowledged the sighting. Two council members who were present for the initial detection report have since left Korreth permanently.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-violet">
+        <p class="callout-label">// Intelligence Note — Unverified · Cycle 847</p>
+        <p>A second cathedral ship signature has been detected at approximately the same bearing as the Cycle 843 sighting. Duration of presence unknown. Guild Council is not commenting. Reckoner intelligence suggests the Church may be monitoring Korreth specifically in relation to developments in the Pale.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 04 — GUILD COUNCIL -->
+    <section class="c-section" id="guild-council" aria-labelledby="guild-heading">
+      <p class="c-section-eyebrow">// 04</p>
+      <h2 class="c-section-title" id="guild-heading">The Guild Council</h2>
+      <div class="c-body">
+        <p>Korreth is nominally governed by a rotating council of seven guild representatives. In practice, three guilds hold effective power: the <strong>Bleed Pilots' Syndicate</strong>, who control all transit in and out of the station; the <strong>Reckoners</strong>, who serve as the station's de facto law enforcement; and the <strong>Flesh Markets Guild</strong>, whose operations are officially denied by every other council member and universally relied upon.</p>
+        <p>The Council's one absolute rule — enforced with violence and universally respected — is that <strong>no faction may deploy military assets within sensor range of the station</strong>. This rule has held for 60 years. It has been tested four times. The challengers are referenced in the Codex under <em>Cautionary Records</em>. What happened to them is not detailed in any public document.</p>
+      </div>
+
+      <div class="pull-quote">
+        <p>"There are no laws on Korreth. There are only things the guilds permit and things they prevent. The difference between a crime and commerce here is about 40,000 kredit."</p>
+        <cite>— attributed to a Reckoner operative, identity withheld · sourced via Korreth black-market data broker</cite>
+      </div>
+
+      <div class="c-body">
+        <p>The current Council is under unusual stress. Two seats have been vacant since Cycle 846 following the disappearance of their representatives under circumstances the Council has classified as "under investigation." Korreth's black-market intelligence community widely believes the vacancies are connected to the Fourth Cannon crisis currently unfolding in the Pale — both representatives were known to have sold information to at least two different buyers in the months before their disappearance.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 05 — NOTABLE LOCATIONS -->
+    <section class="c-section" id="notable" aria-labelledby="notable-heading">
+      <p class="c-section-eyebrow">// 05</p>
+      <h2 class="c-section-title" id="notable-heading">Notable Locations</h2>
+
+      <div class="c-body">
+        <p><strong>The Upper Market</strong> occupies Levels 1–4 and is the largest continuously operating commercial space in neutral Reach territory. Everything is for sale here. The market runs without pause — Korreth observes no cycle-based rest period, a practical adaptation to a station visited by species with radically different biological clocks. The Vorath-scale ceilings of the original processing chambers create a cathedral-like atmosphere that traders and merchants from across the Reach find simultaneously oppressive and spectacular.</p>
+        <p><strong>The Reckoner Hall</strong> on Level 8 is the most important building in the station's Transit Dock zone. Contracts are posted, verified, and paid out here. The board — a physical display that predates the station's current administration by at least two centuries — lists every open contract in the Reach by value, with the highest listed first. The contract currently at the top has been there for eleven days. Its target is listed only as <em>[CLASSIFIED — RECKONER SEAL ALPHA]</em>. Its value is the largest ever posted.</p>
+        <p><strong>The Lower Decks</strong> — Levels 15 through 22 — are navigable only with a guide who knows the current layout, which changes as sections collapse, flood, or are reclaimed by competing squatter communities. The lower decks are where people go when they want to disappear from the upper station's surveillance networks. They are also where three section collapses occurred this cycle, and where the structural integrity of the station is most in question.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 06 — THREAT -->
+    <section class="c-section" id="threat" aria-labelledby="threat-heading">
+      <p class="c-section-eyebrow">// 06</p>
+      <h2 class="c-section-title" id="threat-heading">Threat Assessment</h2>
+      <div class="c-body">
+        <p>Under normal operating conditions, Korreth Station presents a <strong>moderate threat level</strong> to visitors with standard precautions and no active enemies. The Guild Council's neutrality enforcement is genuine and effective in the upper levels. Weapons are permitted; deploying them against another person carries the immediate attention of Reckoner response teams.</p>
+        <p>Current conditions are not normal. The convergence of intelligence activity related to the Fourth Cannon crisis — with operatives from at minimum the Dominion, Covenant, and suspected Church interests all active on the station simultaneously — has elevated ambient threat levels significantly. Three intelligence operatives from unknown agencies have been found dead on Korreth in the past month. The Council has not commented.</p>
+        <p>Visitors are advised to <strong>avoid the Lower Decks entirely</strong> during the current period, to not discuss the Pale, stellar cannons, or AURIS in any public space, and to treat any offer of "exclusive information" from unknown contacts as a potential setup. Korreth is the most dangerous kind of place: one where the danger is invisible until it isn't.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 07 — RELATED -->
+    <section class="c-section" id="related" aria-labelledby="related-heading">
+      <p class="c-section-eyebrow">// 07</p>
+      <h2 class="c-section-title" id="related-heading">Related Entries</h2>
+      <div class="linked-grid" role="list">
+        <a class="linked-card" href="/codex/the-pale" role="listitem">
+          <p class="linked-cat">Location</p>
+          <p class="linked-name">The Pale</p>
+          <p class="linked-desc">Dead zone region on Korreth's approach vector. 23 dead systems. Currently the focus of multi-faction crisis activity.</p>
+          <p class="linked-arrow">// OPEN ENTRY →</p>
+        </a>
+        <a class="linked-card" href="/codex/the-reckoners" role="listitem">
+          <p class="linked-cat">Organisation</p>
+          <p class="linked-name">The Reckoners</p>
+          <p class="linked-desc">Primary enforcement syndicate on Korreth. Currently holding the largest open contract in their history.</p>
+          <p class="linked-arrow">// OPEN ENTRY →</p>
+        </a>
+        <a class="linked-card" href="/factions/vorath" role="listitem">
+          <p class="linked-cat">Faction</p>
+          <p class="linked-name">Vorath Hegemony</p>
+          <p class="linked-desc">Original builders of the harvester ship that became Korreth Station. Still observing.</p>
+          <p class="linked-arrow">// OPEN ENTRY →</p>
+        </a>
+        <a class="linked-card" href="/codex/the-scorching" role="listitem">
+          <p class="linked-cat">Conflict</p>
+          <p class="linked-name">3rd Covenant-Hegemony Engagement</p>
+          <p class="linked-desc">The conflict in which Korreth was seized — or allowed to be taken.</p>
+          <p class="linked-arrow">// OPEN ENTRY →</p>
+        </a>
+        <a class="linked-card" href="/codex/fourth-cannon-crisis" role="listitem">
+          <p class="linked-cat">Active Event</p>
+          <p class="linked-name">The Fourth Cannon Crisis</p>
+          <p class="linked-desc">The crisis driving the current elevated threat level across all Korreth operations.</p>
+          <p class="linked-arrow">// OPEN ENTRY →</p>
+        </a>
+        <a class="linked-card" href="/codex/mira-dushal" role="listitem">
+          <p class="linked-cat">Person</p>
+          <p class="linked-name">Mira Dushal</p>
+          <p class="linked-desc">Bleed pilot who frequently transits through Korreth. Currently the subject of significant intelligence interest.</p>
+          <p class="linked-arrow">// OPEN ENTRY →</p>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ── RIGHT SIDEBAR ── -->
+  <aside class="entry-sidebar" aria-label="Entry reference panel">
+
+    <!-- Map -->
+    <div class="sb-block">
+      <div class="sb-map" aria-label="Location map placeholder">
+        <div class="sb-map-inner">
+          <p class="sb-map-coord">KOR-NULL<br>Dead Zone</p>
+          <div class="sb-map-dot" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="sb-body">
+        <div class="sb-row">
+          <span class="sb-key">Between</span>
+          <span class="sb-val ghost" style="font-size:0.78rem;">VH-7 &amp; VH-8</span>
+        </div>
+        <div class="sb-row">
+          <span class="sb-key">Access</span>
+          <span class="sb-val ghost">Bleed Only</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick data -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">Quick Data</p></div>
+      <div class="sb-body">
+        <div class="sb-row"><span class="sb-key">Class</span>      <span class="sb-val">Station</span></div>
+        <div class="sb-row"><span class="sb-key">Origin</span>     <span class="sb-val green">Vorath</span></div>
+        <div class="sb-row"><span class="sb-key">Length</span>     <span class="sb-val">14km</span></div>
+        <div class="sb-row"><span class="sb-key">Pop.</span>       <span class="sb-val">~180,000</span></div>
+        <div class="sb-row"><span class="sb-key">Control</span>    <span class="sb-val ghost">Guilds</span></div>
+        <div class="sb-row"><span class="sb-key">Threat</span>     <span class="sb-val amber">Moderate↑</span></div>
+        <div class="sb-row"><span class="sb-key">Levels</span>     <span class="sb-val">22 + Sub-0</span></div>
+      </div>
+    </div>
+
+    <!-- Faction presence summary -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">Faction Presence</p></div>
+      <div class="sb-body">
+        <div class="sb-row">
+          <span class="sb-key" style="color:var(--amber);">Dominion</span>
+          <span class="sb-val ghost">Covert</span>
+        </div>
+        <div class="sb-row">
+          <span class="sb-key" style="color:#cc3333;">Covenant</span>
+          <span class="sb-val">Active</span>
+        </div>
+        <div class="sb-row">
+          <span class="sb-key" style="color:var(--toxic-2);">Vorath</span>
+          <span class="sb-val ghost">Observing</span>
+        </div>
+        <div class="sb-row">
+          <span class="sb-key" style="color:var(--violet-2);">Church</span>
+          <span class="sb-val red">Unconfirmed</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">Actions</p></div>
+      <div class="sb-body">
+        <a href="/submit?type=codex&entry=LOC-0012" class="sb-action primary">+ Contribute Edit</a>
+        <a href="#"  class="sb-action" onclick="alert('Edit history coming soon.');return false;">View Edit History</a>
+        <a href="/submit?type=dispute&entry=LOC-0012" class="sb-action">Flag Disputed Info</a>
+        <a href="/submit?type=link&entry=LOC-0012"    class="sb-action">Link a Transmission</a>
+      </div>
+    </div>
+
+    <!-- Entry stats -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">Entry Stats</p></div>
+      <div class="sb-body">
+        <div class="sb-row"><span class="sb-key">Codex ID</span>    <span class="sb-val ghost">LOC-0012</span></div>
+        <div class="sb-row"><span class="sb-key">Revisions</span>   <span class="sb-val">47</span></div>
+        <div class="sb-row"><span class="sb-key">Views</span>       <span class="sb-val">12,440</span></div>
+        <div class="sb-row"><span class="sb-key">Disputes</span>    <span class="sb-val amber">2 open</span></div>
+        <div class="sb-row"><span class="sb-key">Last Edit</span>   <span class="sb-val ghost">Cyc. 847</span></div>
+      </div>
+    </div>
+
+    <!-- Contributors -->
+    <div class="sb-block">
+      <div class="sb-header"><p class="sb-title">Top Contributors</p></div>
+      <div class="sb-body">
+        <div class="contrib-list">
+          <div class="contrib-row">
+            <span class="contrib-name">DARKSTAR_77</span>
+            <span class="contrib-cycle">Cyc. 847</span>
+          </div>
+          <div class="contrib-row">
+            <span class="contrib-name">IRONWRIGHT</span>
+            <span class="contrib-cycle">Cyc. 845</span>
+          </div>
+          <div class="contrib-row">
+            <span class="contrib-name">REMNANT_CORE</span>
+            <span class="contrib-cycle">Cyc. 844</span>
+          </div>
+          <div class="contrib-row">
+            <span class="contrib-name">VOID_SCRIBE</span>
+            <span class="contrib-cycle">Cyc. 841</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-brand-name">THE <em>ASHEN</em> REACH</p>
+      <p class="footer-brand-desc">A collaborative dark science fiction universe. Built by writers, for writers. All lore is canon until it isn't.</p>
+    </div>
+    <nav aria-label="Navigate">
+      <p class="footer-col-title">// Navigate</p>
+      <div class="footer-links">
+        <a href="/the-reach"     class="footer-link">The Reach</a>
+        <a href="/transmissions" class="footer-link">Transmissions</a>
+        <a href="/codex"         class="footer-link">The Codex</a>
+        <a href="/community"     class="footer-link">Community</a>
+        <a href="/products"      class="footer-link">Products</a>
+      </div>
+    </nav>
+    <nav aria-label="Factions">
+      <p class="footer-col-title">// Factions</p>
+      <div class="footer-links">
+        <a href="/factions/dominion" class="footer-link">Dominion Eternal</a>
+        <a href="/factions/covenant" class="footer-link">Fractured Covenant</a>
+        <a href="/factions/vorath"   class="footer-link">Vorath Hegemony</a>
+        <a href="/factions/church"   class="footer-link">Hollow Church</a>
+      </div>
+    </nav>
+    <nav aria-label="Sector">
+      <p class="footer-col-title">// Sector</p>
+      <div class="footer-links">
+        <a href="/about"   class="footer-link">About</a>
+        <a href="/submit"  class="footer-link">Submit a Story</a>
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+        <a href="/terms"   class="footer-link">Terms of Service</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">THE ASHEN REACH // SIGNAL_DECAY.SYSTEM v1.0 // ALL TRANSMISSIONS ARE PERMANENT RECORD</p>
+    <p class="footer-signal">SIGNAL: ACTIVE — THE REACH REMEMBERS</p>
+  </div>
+</footer>
+
+<script src="../../scripts/main.js"></script>
+</body>
+</html>
