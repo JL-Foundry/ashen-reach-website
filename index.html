@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>The Ashen Reach — A Universe in Decay</title>
+  <meta name="description" content="400 star systems. Four factions. One weapon that can destroy them all. The Ashen Reach is a collaborative dark science fiction universe — read the lore, explore the Codex, and transmit your stories.">
+  <meta name="keywords" content="science fiction, space opera, dark sci-fi, collaborative fiction, worldbuilding, lore, the ashen reach">
+  <link rel="canonical" href="https://theashenreach.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://theashenreach.com/">
+  <meta property="og:title"       content="The Ashen Reach — A Universe in Decay">
+  <meta property="og:description" content="400 star systems. Four factions. One weapon that can destroy them all.">
+  <meta property="og:image"       content="https://theashenreach.com/assets/og-image.jpg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="The Ashen Reach — A Universe in Decay">
+  <meta name="twitter:description" content="400 star systems. Four factions. One weapon that can destroy them all.">
+  <meta name="twitter:image"       content="https://theashenreach.com/assets/og-image.jpg">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The Ashen Reach",
+    "url": "https://theashenreach.com",
+    "description": "A collaborative dark science fiction universe",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://theashenreach.com/codex?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- Favicon (placeholder — replace with real favicon later) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><circle cx='16' cy='16' r='12' fill='none' stroke='%238b0000' stroke-width='1.5'/><circle cx='16' cy='16' r='4' fill='%23cc1a1a'/></svg>">
+
+  <!-- Design System -->
+  <link rel="stylesheet" href="styles/signal-decay.css">
+
+  <style>
+    /* ── PAGE-SPECIFIC STYLES ── */
+
+    /* Faction cards */
+    .faction-card {
+      background: var(--void-2);
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .faction-card:hover { background: var(--void-3); }
+    .faction-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      transition: height var(--transition-fast);
+    }
+    .faction-card:hover::before { height: 5px; }
+    .faction-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.007) 3px, rgba(255,255,255,0.007) 4px);
+      pointer-events: none;
+    }
+    .fc-dominion::before  { background: var(--amber); }
+    .fc-covenant::before  { background: var(--crimson); }
+    .fc-vorath::before    { background: var(--toxic-2); }
+    .fc-church::before    { background: var(--violet-2); }
+
+    .faction-glyph {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 1rem;
+      opacity: 0.15;
+    }
+    .faction-name {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+    .fc-dominion .faction-glyph,
+    .fc-dominion .faction-name { color: var(--amber-2); }
+    .fc-covenant .faction-glyph,
+    .fc-covenant .faction-name { color: var(--crimson-2); }
+    .fc-vorath .faction-glyph,
+    .fc-vorath .faction-name   { color: var(--toxic-2); }
+    .fc-church .faction-glyph,
+    .fc-church .faction-name   { color: var(--violet-2); }
+
+    .faction-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--steel);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .faction-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.6;
+    }
+    .faction-motto {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--steel-2);
+      margin-top: 1rem;
+      font-style: italic;
+    }
+
+    /* World cards */
+    .world-card {
+      background: var(--void-2);
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background var(--transition-fast);
+    }
+    .world-card:hover { background: var(--void-3); }
+    .world-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--ash-3);
+      transition: background var(--transition-fast);
+    }
+    .world-card:hover::before { background: var(--crimson); }
+    .world-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.007) 3px, rgba(255,255,255,0.007) 4px);
+      pointer-events: none;
+    }
+    .world-coord {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--steel);
+      margin-bottom: 0.5rem;
+    }
+    .world-name {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-2);
+      margin-bottom: 0.3rem;
+    }
+    .world-type {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .world-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.6;
+    }
+    .world-threat {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--ember);
+      border: 1px solid var(--blood);
+      padding: 2px 6px;
+    }
+
+    /* Hook cards */
+    .hook-card {
+      background: var(--void-2);
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition-fast);
+    }
+    .hook-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 2px;
+      background: var(--ash-3);
+      transition: background var(--transition-fast);
+    }
+    .hook-card:hover { background: var(--void-3); }
+    .hook-card:hover::before { background: var(--crimson); }
+    .hook-num {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--blood);
+      margin-bottom: 0.5rem;
+    }
+    .hook-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--white-2);
+      margin-bottom: 0.5rem;
+    }
+    .hook-text {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.6;
+    }
+
+    /* Join section */
+    .join-section {
+      background: var(--void-2);
+      border-top: 1px solid var(--blood);
+      padding: 5rem 2rem;
+    }
+    .join-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .join-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      line-height: 0.95;
+      color: var(--white-2);
+      margin-bottom: 1rem;
+    }
+    .join-title span { color: var(--blood); }
+    .join-desc {
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      color: var(--ghost);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .join-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .join-feature {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ghost);
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    .join-feature::before {
+      content: '//';
+      color: var(--crimson);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .join-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .join-form-note {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel);
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+    .form-msg {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      min-height: 16px;
+    }
+
+    /* Page sections */
+    .page-section {
+      padding: 5rem 2rem;
+    }
+    .page-section-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
+    @media (max-width: 720px) {
+      .join-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .page-section { padding: 3rem 1.25rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAVIGATION ─────────────────────────────────────── -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-menu-btn" id="navMenuBtn" aria-label="Open navigation menu" aria-expanded="false">
+    ☰ Menu
+  </button>
+
+  <a href="/" class="nav-logo" aria-label="The Ashen Reach — Home">
+    THE <em>ASHEN</em> REACH
+  </a>
+
+  <div class="nav-links" role="menubar">
+    <a href="/the-reach" class="nav-link" data-page="the-reach" role="menuitem">The Reach</a>
+    <a href="/transmissions" class="nav-link" data-page="transmissions" role="menuitem">Transmissions</a>
+    <a href="/codex" class="nav-link" data-page="codex" role="menuitem">Codex</a>
+    <a href="/community" class="nav-link" data-page="community" role="menuitem">Community</a>
+    <a href="/products" class="nav-link" data-page="products" role="menuitem">Products</a>
+  </div>
+
+  <a href="#join" class="nav-cta">Enter the Reach</a>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="nav-drawer" id="navDrawer" role="menu" aria-label="Mobile navigation">
+  <a href="/the-reach"     class="nav-link" role="menuitem">The Reach</a>
+  <a href="/transmissions" class="nav-link" role="menuitem">Transmissions</a>
+  <a href="/codex"         class="nav-link" role="menuitem">Codex</a>
+  <a href="/community"     class="nav-link" role="menuitem">Community</a>
+  <a href="/products"      class="nav-link" role="menuitem">Products</a>
+  <a href="#join"          class="nav-link" role="menuitem" style="color:var(--crimson);">Enter the Reach</a>
+</div>
+<div class="overlay" id="navOverlay" aria-hidden="true"></div>
+
+
+<!-- ── HERO ───────────────────────────────────────────── -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-bg"          aria-hidden="true"></div>
+  <div class="hero-grid-overlay" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow" aria-label="Transmission incoming from sector Vael-7">
+      TRANSMISSION INCOMING — SECTOR VAEL-7
+    </p>
+
+    <h1 class="t-display t-display-xl glitch" data-text="THE ASHEN REACH" style="display:block; margin-bottom: 0.75rem;">
+      THE ASHEN REACH
+    </h1>
+
+    <p class="t-sub" style="font-size: clamp(1rem,2.5vw,1.6rem); margin-bottom: 1.75rem;">
+      A Universe in Decay
+    </p>
+
+    <p class="t-body" style="max-width: 540px; margin-bottom: 2.5rem;" data-fade>
+      400 star systems. Four factions. One weapon that can destroy them all.
+      This is not a story about heroes. It is a story about what survives
+      when civilisation burns.
+    </p>
+
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;" data-fade>
+      <a href="#join"          class="btn btn-primary">Enter the Reach</a>
+      <a href="/the-reach"     class="btn btn-secondary">Read the Lore</a>
+    </div>
+  </div>
+
+  <!-- Live stats -->
+  <div class="hero-stats" aria-label="Universe statistics" data-fade>
+    <div class="hero-stat">
+      <div class="hero-stat-val">2,847</div>
+      <div class="hero-stat-label">Transmissions</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">412</div>
+      <div class="hero-stat-label">Codex Entries</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-val">14</div>
+      <div class="hero-stat-label">Active Conflicts</div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
+
+
+<!-- ── TICKER ─────────────────────────────────────────── -->
+<div class="ticker" role="marquee" aria-label="Incoming transmissions ticker" aria-live="off">
+  <div class="ticker-inner">
+    <span class="ticker-item"><em>ALERT:</em> Dominion Compliance Fleet detected in Vael orbit — population advised to remain indoors</span>
+    <span class="ticker-item"><strong>NEW TX-0847:</strong> "The Last Bleeder" — 4,821 reads · rated EXTREME</span>
+    <span class="ticker-item"><em>CODEX UPDATED:</em> Korreth Station — Guild War entry expanded</span>
+    <span class="ticker-item"><strong>WARNING:</strong> Vorath Patience Fleet holding position at the Pale perimeter — intent unknown</span>
+    <span class="ticker-item"><em>TRANSMISSION:</em> AURIS remembers — signal origin unlocated</span>
+    <span class="ticker-item"><strong>NEW TX-0848:</strong> "Children of the Scorching" — first chapter posted</span>
+    <!-- Duplicate for seamless loop -->
+    <span class="ticker-item"><em>ALERT:</em> Dominion Compliance Fleet detected in Vael orbit — population advised to remain indoors</span>
+    <span class="ticker-item"><strong>NEW TX-0847:</strong> "The Last Bleeder" — 4,821 reads · rated EXTREME</span>
+    <span class="ticker-item"><em>CODEX UPDATED:</em> Korreth Station — Guild War entry expanded</span>
+    <span class="ticker-item"><strong>WARNING:</strong> Vorath Patience Fleet holding position at the Pale perimeter — intent unknown</span>
+    <span class="ticker-item"><em>TRANSMISSION:</em> AURIS remembers — signal origin unlocated</span>
+    <span class="ticker-item"><strong>NEW TX-0848:</strong> "Children of the Scorching" — first chapter posted</span>
+  </div>
+</div>
+
+
+<!-- ── FACTIONS ───────────────────────────────────────── -->
+<section class="page-section" aria-labelledby="factions-heading">
+  <div class="page-section-inner">
+    <div class="section-header" data-fade>
+      <p class="section-eyebrow">// THE POWERS</p>
+      <h2 class="section-title" id="factions-heading">Know Your <span>Enemies</span></h2>
+      <hr class="section-rule" aria-hidden="true">
+    </div>
+
+    <div class="grid-gap g-4" role="list">
+      <article class="faction-card fc-dominion" role="listitem" data-fade>
+        <div class="faction-glyph" aria-hidden="true">✦</div>
+        <h3 class="faction-name">Dominion Eternal</h3>
+        <p class="faction-tag">// AMBER-IRON · 200 SYSTEMS</p>
+        <p class="faction-desc">Order maintained through compliance fleets and psychological conditioning. They are not entirely wrong to call themselves civilisation's last guarantor.</p>
+        <p class="faction-motto">"Order is the only kindness."</p>
+      </article>
+
+      <article class="faction-card fc-covenant" role="listitem" data-fade>
+        <div class="faction-glyph" aria-hidden="true">◈</div>
+        <h3 class="faction-name">Fractured Covenant</h3>
+        <p class="faction-tag">// BLOOD-RED · FREE SPACE</p>
+        <p class="faction-desc">A coalition dissolved into warlords and idealists. The only currency that matters is reputation, and reputation is written in blood.</p>
+        <p class="faction-motto">"Survive, or don't."</p>
+      </article>
+
+      <article class="faction-card fc-vorath" role="listitem" data-fade>
+        <div class="faction-glyph" aria-hidden="true">⬡</div>
+        <h3 class="faction-name">Vorath Hegemony</h3>
+        <p class="faction-tag">// TOXIC-GREEN · 90 SYSTEMS</p>
+        <p class="faction-desc">Ancient deep-ocean predators. They do not conquer — they consume. Every species in their path is a resource to be processed.</p>
+        <p class="faction-motto">"All things are resources."</p>
+      </article>
+
+      <article class="faction-card fc-church" role="listitem" data-fade>
+        <div class="faction-glyph" aria-hidden="true">◯</div>
+        <h3 class="faction-name">Hollow Church</h3>
+        <p class="faction-tag">// VOID-VIOLET · NO FIXED SPACE</p>
+        <p class="faction-desc">Death cultists travelling in cathedral-ships. Their warriors remove their own pain receptors. They have been waiting for someone to find the cannon.</p>
+        <p class="faction-motto">"Only the fire is honest."</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── TRANSMISSIONS ──────────────────────────────────── -->
+<section class="page-section" style="padding-top:0;" aria-labelledby="tx-heading">
+  <div class="page-section-inner">
+    <div class="section-header" data-fade>
+      <p class="section-eyebrow">// LATEST TRANSMISSIONS</p>
+      <h2 class="section-title" id="tx-heading">Stories from <span>the Reach</span></h2>
+      <hr class="section-rule" aria-hidden="true">
+    </div>
+
+    <div class="grid-gap g-2" role="list">
+      <article class="tx-card tx-card-featured" role="listitem" data-fade>
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+          <span class="badge badge-covenant">Covenant</span>
+          <span class="badge badge-neutral">Short Fiction</span>
+          <span class="badge badge-danger">Extreme</span>
+        </div>
+        <h3 class="tx-card-title">The Last Bleeder</h3>
+        <p class="tx-card-excerpt">She had made 412 unshielded Bleed transits. The doctors said 8 was the survivable limit. She had stopped counting the hallucinations somewhere around transit 200, when the thing in the Bleed had started talking back.</p>
+        <div class="tx-card-footer">
+          <span class="tx-card-author">// DARKSTAR_77</span>
+          <span class="tx-card-reads">█ 4,821 READS · 312 MARKS</span>
+        </div>
+      </article>
+
+      <article class="tx-card" role="listitem" data-fade>
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+          <span class="badge badge-dominion">Dominion</span>
+          <span class="badge badge-neutral">Lore</span>
+        </div>
+        <h3 class="tx-card-title">Ironguard Selection — Year Zero</h3>
+        <p class="tx-card-excerpt">They took him at ten. His mother did not resist — resistance was sedition, and sedition ended bloodlines. He arrived at the conditioning centre with a name. They returned him to the sector with a number.</p>
+        <div class="tx-card-footer">
+          <span class="tx-card-author">// IRONWRIGHT</span>
+          <span class="tx-card-reads">█ 3,102 READS · 228 MARKS</span>
+        </div>
+      </article>
+
+      <article class="tx-card" role="listitem" data-fade>
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+          <span class="badge badge-church">Church</span>
+          <span class="badge badge-neutral">Horror</span>
+          <span class="badge badge-danger">Extreme</span>
+        </div>
+        <h3 class="tx-card-title">The Rite of Subtraction</h3>
+        <p class="tx-card-excerpt">The first cut was the hardest. Not because it hurt — Penitents had no pain receptors by the time of the Rite. It was hardest because it was a choice. Everything after that was just mathematics.</p>
+        <div class="tx-card-footer">
+          <span class="tx-card-author">// VOID_SCRIBE</span>
+          <span class="tx-card-reads">█ 2,780 READS · 441 MARKS</span>
+        </div>
+      </article>
+
+      <article class="tx-card" role="listitem" data-fade>
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.75rem;">
+          <span class="badge badge-vorath">Vorath</span>
+          <span class="badge badge-neutral">First Contact</span>
+        </div>
+        <h3 class="tx-card-title">The Patient Fleet</h3>
+        <p class="tx-card-excerpt">The Vorath ships did not attack. They simply arrived, assumed a stable orbit, and began cataloguing. Three months later, the planet's communication networks went silent. One month after that, the harvest began.</p>
+        <div class="tx-card-footer">
+          <span class="tx-card-author">// REMNANT_CORE</span>
+          <span class="tx-card-reads">█ 2,341 READS · 187 MARKS</span>
+        </div>
+      </article>
+    </div>
+
+    <div style="text-align:center; margin-top: 2rem;" data-fade>
+      <a href="/transmissions" class="btn btn-secondary">View All Transmissions</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── KEY WORLDS ─────────────────────────────────────── -->
+<section class="page-section" style="background:var(--void-2); border-top:1px solid var(--ash-2); border-bottom:1px solid var(--ash-2);" aria-labelledby="worlds-heading">
+  <div class="page-section-inner">
+    <div class="section-header" data-fade>
+      <p class="section-eyebrow">// KEY LOCATIONS</p>
+      <h2 class="section-title" id="worlds-heading">The <span>Known</span> Reach</h2>
+      <hr class="section-rule" aria-hidden="true">
+    </div>
+
+    <div class="grid-gap g-3" role="list">
+      <article class="world-card" role="listitem" data-fade>
+        <p class="world-coord">COORD: VAL-7 // DOMINION SPACE</p>
+        <h3 class="world-name">Vael</h3>
+        <p class="world-type">// SCAR CITY — OCCUPIED WORLD</p>
+        <p class="world-desc">Luxury towers rising from rubble fields. The poor live inside the bombed-out husks of government buildings. Everyone on Vael owes someone something.</p>
+        <span class="world-threat">⚠ THREAT: HIGH</span>
+      </article>
+
+      <article class="world-card" role="listitem" data-fade>
+        <p class="world-coord">COORD: KOR-NULL // NEUTRAL ZONE</p>
+        <h3 class="world-name">Korreth Station</h3>
+        <p class="world-type">// DERELICT HARVESTER — CONVERTED</p>
+        <p class="world-desc">Seized Vorath hardware turned free port. The only truly neutral ground in the Reach. People go to Korreth to vanish. Some manage it.</p>
+        <span class="world-threat">⚠ THREAT: MODERATE</span>
+      </article>
+
+      <article class="world-card" role="listitem" data-fade>
+        <p class="world-coord">COORD: PALE-23 // DEAD ZONE</p>
+        <h3 class="world-name">The Pale</h3>
+        <p class="world-type">// DEAD ZONE — 23 SYSTEMS</p>
+        <p class="world-desc">Where the stellar cannons fired. Cold neutron stars and debris fields full of dead cities. Scavengers sometimes find things that shouldn't still be active.</p>
+        <span class="world-threat" style="color:var(--violet-2);border-color:var(--violet);">⚠ THREAT: UNKNOWN</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── LORE HOOKS ─────────────────────────────────────── -->
+<section class="page-section" aria-labelledby="hooks-heading">
+  <div class="page-section-inner">
+    <div class="section-header" data-fade>
+      <p class="section-eyebrow">// OPEN MYSTERIES</p>
+      <h2 class="section-title" id="hooks-heading">Lore <span>Hooks</span></h2>
+      <hr class="section-rule" aria-hidden="true">
+    </div>
+
+    <div class="grid-gap g-3" role="list">
+      <article class="hook-card" role="listitem" data-fade>
+        <p class="hook-num">// HOOK_001</p>
+        <h3 class="hook-title">The Last Bleeder</h3>
+        <p class="hook-text">A pilot who has survived 400+ unshielded Bleed transits. Claims something in the Bleed is keeping her alive — and wants something from the physical universe.</p>
+      </article>
+      <article class="hook-card" role="listitem" data-fade>
+        <p class="hook-num">// HOOK_002</p>
+        <h3 class="hook-title">The Ironguard Deserter</h3>
+        <p class="hook-text">A senior Dominion commander vanished with a full company, a warship, and classified files. The Dominion wants him alive. The price is enormous. No one knows why.</p>
+      </article>
+      <article class="hook-card" role="listitem" data-fade>
+        <p class="hook-num">// HOOK_003</p>
+        <h3 class="hook-title">The Remnant Gospel</h3>
+        <p class="hook-text">Someone is broadcasting a manifesto with the recursive intelligence of a full AGI. Every transmission ends the same: <em style="color:var(--crimson)">AURIS remembers.</em></p>
+      </article>
+      <article class="hook-card" role="listitem" data-fade>
+        <p class="hook-num">// HOOK_004</p>
+        <h3 class="hook-title">The Vorath Exception</h3>
+        <p class="hook-text">In all recorded history, the Vorath have never taken a prisoner. Three weeks ago, they returned one. She has no memory of her time held. She has a scar behind her ear.</p>
+      </article>
+      <article class="hook-card" role="listitem" data-fade>
+        <p class="hook-num">// HOOK_005</p>
+        <h3 class="hook-title">The Price of the Pale</h3>
+        <p class="hook-text">Every scavenger who enters deep Pale space finds exactly what they were looking for — no matter how specific. Those who go back a second time don't return.</p>
+      </article>
+      <article class="hook-card" role="listitem" data-fade>
+        <p class="hook-num">// HOOK_006</p>
+        <h3 class="hook-title">The Fourth Cannon</h3>
+        <p class="hook-text">The Dominion has found it. The Reckoners have the contract. The Hollow Church has known where it is for decades. They've been waiting for witnesses.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── JOIN / EMAIL CAPTURE ───────────────────────────── -->
+<section class="join-section" id="join" aria-labelledby="join-heading">
+  <div class="join-inner">
+    <div data-fade>
+      <p class="section-eyebrow">// JOIN THE REACH</p>
+      <h2 class="join-title" id="join-heading">Transmit Your <span>Signal</span></h2>
+      <p class="join-desc">The Ashen Reach is a living universe. Write stories, build lore, argue the Codex. Every contributor leaves a mark on the world that survives them.</p>
+      <ul class="join-features" aria-label="Membership benefits">
+        <li class="join-feature">Submit fiction, lore, and world expansions to the Codex</li>
+        <li class="join-feature">Rate and annotate community transmissions</li>
+        <li class="join-feature">Join faction guilds and collaborative story arcs</li>
+        <li class="join-feature">Access print-ready design assets and product templates</li>
+      </ul>
+    </div>
+
+    <div data-fade>
+      <form class="join-form" data-email-form aria-label="Sign up to The Ashen Reach">
+        <p class="t-label" style="color:var(--steel-2); margin-bottom:0.25rem;">Create Account</p>
+
+        <div class="field">
+          <label class="field-label" for="signup-callsign">Callsign</label>
+          <input class="input" type="text" id="signup-callsign" name="callsign" placeholder="CALLSIGN..." autocomplete="username">
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="signup-email">Comm Address</label>
+          <input class="input" type="email" id="signup-email" name="email" placeholder="COMM_ADDRESS..." autocomplete="email" required>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="signup-password">Encryption Key</label>
+          <input class="input" type="password" id="signup-password" name="password" placeholder="ENCRYPTION KEY..." autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">
+          Transmit Registration
+        </button>
+
+        <p class="form-msg" data-form-msg aria-live="polite"></p>
+
+        <p class="join-form-note">
+          By registering you accept the Reach Accords.<br>
+          All transmissions are permanent record.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-brand-name">THE <em>ASHEN</em> REACH</p>
+      <p class="footer-brand-desc">A collaborative dark science fiction universe. Built by writers, for writers. All lore is canon until it isn't.</p>
+    </div>
+    <nav aria-label="Navigate">
+      <p class="footer-col-title">// Navigate</p>
+      <div class="footer-links">
+        <a href="/the-reach"     class="footer-link">The Reach</a>
+        <a href="/transmissions" class="footer-link">Transmissions</a>
+        <a href="/codex"         class="footer-link">The Codex</a>
+        <a href="/community"     class="footer-link">Community</a>
+        <a href="/products"      class="footer-link">Products</a>
+      </div>
+    </nav>
+    <nav aria-label="Factions">
+      <p class="footer-col-title">// Factions</p>
+      <div class="footer-links">
+        <a href="/factions/dominion" class="footer-link">Dominion Eternal</a>
+        <a href="/factions/covenant" class="footer-link">Fractured Covenant</a>
+        <a href="/factions/vorath"   class="footer-link">Vorath Hegemony</a>
+        <a href="/factions/church"   class="footer-link">Hollow Church</a>
+        <a href="/factions/neutral"  class="footer-link">Unaligned</a>
+      </div>
+    </nav>
+    <nav aria-label="Sector">
+      <p class="footer-col-title">// Sector</p>
+      <div class="footer-links">
+        <a href="/about"       class="footer-link">About the Project</a>
+        <a href="/style-guide" class="footer-link">Style Guide</a>
+        <a href="/submit"      class="footer-link">Submit a Story</a>
+        <a href="/privacy"     class="footer-link">Privacy Policy</a>
+        <a href="/terms"       class="footer-link">Terms of Service</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">THE ASHEN REACH // SIGNAL_DECAY.SYSTEM v1.0 // ALL TRANSMISSIONS ARE PERMANENT RECORD</p>
+    <p class="footer-signal" aria-live="polite">SIGNAL: ACTIVE — THE REACH REMEMBERS</p>
+  </div>
+</footer>
+
+
+<!-- ── SCRIPTS ────────────────────────────────────────── -->
+<script src="scripts/main.js"></script>
+</body>
+</html>
