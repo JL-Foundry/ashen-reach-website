@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>The Codex | The Ashen Reach</title>
+  <meta name="description" content="The Codex is the living encyclopaedia of the Ashen Reach universe. Browse locations, factions, technology, people, and events — all community-written, all contested.">
+  <link rel="canonical" href="https://theashenreach.com/codex">
+
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://theashenreach.com/codex">
+  <meta property="og:title"       content="The Codex | The Ashen Reach">
+  <meta property="og:description" content="The living encyclopaedia of the Ashen Reach. Locations, factions, technology, people, events — community-written, all contested.">
+  <meta property="og:image"       content="https://theashenreach.com/assets/og-image.jpg">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "The Ashen Reach Codex",
+    "description": "Living encyclopaedia of the Ashen Reach universe",
+    "url": "https://theashenreach.com/codex",
+    "publisher": { "@type": "Organization", "name": "The Ashen Reach", "url": "https://theashenreach.com" }
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><circle cx='16' cy='16' r='12' fill='none' stroke='%238b0000' stroke-width='1.5'/><circle cx='16' cy='16' r='4' fill='%23cc1a1a'/></svg>">
+  <link rel="stylesheet" href="../styles/signal-decay.css">
+
+  <style>
+    /* ── PAGE HERO ── */
+    .page-hero {
+      padding: calc(var(--nav-height) + var(--space-8)) var(--space-5) var(--space-7);
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--blood);
+      background: var(--void-2);
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 50%, rgba(139,0,0,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 10% 80%, rgba(74,26,122,0.05) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139,0,0,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,0,0,0.035) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .page-hero-path {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .page-hero-path a { color: var(--steel-2); transition: color var(--transition-fast); }
+    .page-hero-path a:hover { color: var(--ghost); }
+    .page-hero-path span { color: var(--blood); }
+    .hero-stats-row {
+      display: flex;
+      gap: var(--space-6);
+      margin-top: var(--space-5);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--ash-2);
+      flex-wrap: wrap;
+    }
+    .hero-stat-item { display: flex; flex-direction: column; gap: 2px; }
+    .hero-stat-val  {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--crimson-2);
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+    }
+
+    /* ── CODEX LAYOUT ── */
+    .codex-layout {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: var(--space-7) var(--space-5);
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    /* ── LEFT NAV ── */
+    .codex-nav {
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-4));
+    }
+    .codex-nav-section { margin-bottom: var(--space-5); }
+    .codex-nav-title {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--blood);
+      text-transform: uppercase;
+      padding: 0 var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+    .codex-nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--steel-2);
+      padding: 0.32rem var(--space-3);
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border-left: 2px solid transparent;
+      text-decoration: none;
+    }
+    .codex-nav-link:hover { color: var(--ghost); background: rgba(255,255,255,0.02); }
+    .codex-nav-link.active { color: var(--white); border-left-color: var(--crimson); background: rgba(139,0,0,0.07); }
+    .codex-nav-link .count {
+      font-size: 9px;
+      color: var(--steel);
+      background: var(--ash-2);
+      padding: 1px 5px;
+      letter-spacing: 0;
+    }
+    .codex-nav-divider { border: none; border-top: 1px solid var(--ash-2); margin: var(--space-3) var(--space-3); }
+
+    /* ── MAIN CONTENT ── */
+    .codex-main {}
+
+    /* Search + filter bar */
+    .filter-bar {
+      display: flex;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--steel-2);
+      pointer-events: none;
+      letter-spacing: 0;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+      outline: none;
+      transition: border-color var(--transition-fast);
+      letter-spacing: 0.05em;
+    }
+    .search-input:focus { border-color: var(--crimson); }
+    .search-input::placeholder { color: var(--steel); }
+    .filter-btns { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.38rem 0.75rem;
+      border: 1px solid var(--ash-2);
+      color: var(--steel-2);
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: var(--ash-3); color: var(--ghost); }
+    .filter-btn.active { color: var(--white); border-color: var(--blood); background: rgba(139,0,0,0.1); }
+    .filter-btn.f-dominion.active  { color: var(--amber-2);  border-color: var(--amber);   background: rgba(196,122,26,0.1); }
+    .filter-btn.f-covenant.active  { color: #cc3333;          border-color: var(--blood);   background: rgba(139,0,0,0.12); }
+    .filter-btn.f-vorath.active    { color: var(--toxic-2);   border-color: var(--toxic);   background: rgba(42,90,26,0.12); }
+    .filter-btn.f-church.active    { color: var(--violet-2);  border-color: var(--violet);  background: rgba(74,26,122,0.12); }
+    .filter-btn.f-neutral.active   { color: var(--ghost);     border-color: var(--ash-3); }
+
+    /* Results header */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--ash-2);
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+    .results-count {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--steel-2);
+    }
+    .results-count span { color: var(--crimson); }
+    .sort-select {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--steel-2);
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      padding: 0.3rem 0.6rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .sort-select:focus { border-color: var(--crimson); }
+
+    /* Category section headers */
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin: var(--space-6) 0 var(--space-4);
+    }
+    .category-header:first-child { margin-top: 0; }
+    .category-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .category-line {
+      flex: 1;
+      height: 1px;
+      background: var(--ash-2);
+    }
+    .category-count {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel);
+      white-space: nowrap;
+    }
+
+    /* Codex entry card */
+    .entry-card {
+      display: grid;
+      grid-template-columns: 3px 1fr auto;
+      gap: 0 var(--space-4);
+      padding: var(--space-4) 0;
+      border-bottom: 1px solid var(--ash-2);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      text-decoration: none;
+      align-items: start;
+    }
+    .entry-card:first-child { border-top: 1px solid var(--ash-2); }
+    .entry-card:hover { background: rgba(255,255,255,0.015); margin: 0 calc(-1 * var(--space-3)); padding-left: var(--space-3); padding-right: var(--space-3); }
+    .entry-card-bar { height: 100%; min-height: 50px; }
+    .entry-card-body {}
+    .entry-card-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: 0.3rem;
+      flex-wrap: wrap;
+    }
+    .entry-card-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--white-2);
+    }
+    .entry-card-id {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel);
+      letter-spacing: 0.08em;
+    }
+    .entry-card-desc {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--ghost);
+      line-height: 1.55;
+      margin-bottom: 0.5rem;
+    }
+    .entry-card-meta {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .entry-card-right {
+      text-align: right;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+      padding-top: 2px;
+    }
+    .entry-views {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel-2);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+    .entry-arrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--blood);
+      letter-spacing: 0.1em;
+    }
+    .entry-disputed {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--amber-2);
+      border: 1px solid var(--amber);
+      padding: 1px 5px;
+      letter-spacing: 0.08em;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: var(--space-9) var(--space-5);
+      text-align: center;
+      display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-state-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--steel-2);
+      margin-bottom: var(--space-3);
+    }
+    .empty-state-text {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--steel);
+    }
+
+    /* Contribute CTA */
+    .contribute-bar {
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      border-left: 2px solid var(--crimson);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .contribute-bar-text {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--ghost);
+    }
+    .contribute-bar-text strong { color: var(--white-2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .codex-layout { grid-template-columns: 1fr; }
+      .codex-nav {
+        position: static;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-3);
+      }
+      .codex-nav-section { margin-bottom: 0; }
+      .codex-nav-divider { display: none; }
+    }
+    @media (max-width: 600px) {
+      .codex-layout { padding: var(--space-5) var(--space-4); }
+      .codex-nav { grid-template-columns: 1fr; }
+      .filter-bar { flex-direction: column; align-items: stretch; }
+      .search-wrap { min-width: unset; }
+      .filter-btns { justify-content: flex-start; }
+      .entry-card { grid-template-columns: 3px 1fr; }
+      .entry-card-right { display: none; }
+      .hero-stats-row { gap: var(--space-4); }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAV ────────────────────────────────────────────── -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-menu-btn" id="navMenuBtn" aria-label="Open navigation menu">☰ Menu</button>
+  <a href="/" class="nav-logo">THE <em>ASHEN</em> REACH</a>
+  <div class="nav-links">
+    <a href="/the-reach"     class="nav-link" data-page="the-reach">The Reach</a>
+    <a href="/transmissions" class="nav-link" data-page="transmissions">Transmissions</a>
+    <a href="/codex"         class="nav-link active" data-page="codex">Codex</a>
+    <a href="/community"     class="nav-link" data-page="community">Community</a>
+    <a href="/products"      class="nav-link" data-page="products">Products</a>
+  </div>
+  <a href="/#join" class="nav-cta">Enter the Reach</a>
+</nav>
+
+<div class="nav-drawer" id="navDrawer" role="menu">
+  <a href="/the-reach"     class="nav-link">The Reach</a>
+  <a href="/transmissions" class="nav-link">Transmissions</a>
+  <a href="/codex"         class="nav-link">Codex</a>
+  <a href="/community"     class="nav-link">Community</a>
+  <a href="/products"      class="nav-link">Products</a>
+  <a href="/#join"         class="nav-link" style="color:var(--crimson);">Enter the Reach</a>
+</div>
+<div class="overlay" id="navOverlay" aria-hidden="true"></div>
+
+
+<!-- ── PAGE HERO ──────────────────────────────────────── -->
+<header class="page-hero">
+  <div class="page-hero-inner">
+    <nav class="page-hero-path" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <span style="color:var(--ghost);">Codex</span>
+    </nav>
+    <p class="section-eyebrow">// LIVING ENCYCLOPAEDIA</p>
+    <h1 class="t-display t-display-lg" style="margin-bottom:0.6rem;">The Codex</h1>
+    <p class="t-sub" style="font-size:0.95rem; margin-bottom:0.75rem;">
+      Community-Written · Disputed · Expanding
+    </p>
+    <p class="t-body" style="max-width:580px; font-size:0.95rem;">
+      Every location, faction, technology, person, and event in the Reach
+      has an entry here. All of it is written by contributors. All of it
+      can be challenged. Nothing is final.
+    </p>
+    <div class="hero-stats-row" role="list">
+      <div class="hero-stat-item" role="listitem">
+        <span class="hero-stat-val" id="statTotal">412</span>
+        <span class="hero-stat-label">Total Entries</span>
+      </div>
+      <div class="hero-stat-item" role="listitem">
+        <span class="hero-stat-val" style="color:var(--amber-2);">47</span>
+        <span class="hero-stat-label">Disputed</span>
+      </div>
+      <div class="hero-stat-item" role="listitem">
+        <span class="hero-stat-val" style="color:var(--toxic-2);">12</span>
+        <span class="hero-stat-label">Updated This Cycle</span>
+      </div>
+      <div class="hero-stat-item" role="listitem">
+        <span class="hero-stat-val" style="color:var(--ghost);">284</span>
+        <span class="hero-stat-label">Contributors</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<!-- ── CODEX LAYOUT ───────────────────────────────────── -->
+<div class="codex-layout">
+
+  <!-- LEFT NAV -->
+  <aside class="codex-nav" aria-label="Codex categories">
+    <div class="codex-nav-section">
+      <p class="codex-nav-title">Categories</p>
+      <a class="codex-nav-link active" data-cat="all" href="#" onclick="filterCat('all');return false;">
+        All Entries <span class="count">412</span>
+      </a>
+      <a class="codex-nav-link" data-cat="locations" href="#" onclick="filterCat('locations');return false;">
+        Locations <span class="count">98</span>
+      </a>
+      <a class="codex-nav-link" data-cat="factions" href="#" onclick="filterCat('factions');return false;">
+        Factions <span class="count">74</span>
+      </a>
+      <a class="codex-nav-link" data-cat="technology" href="#" onclick="filterCat('technology');return false;">
+        Technology <span class="count">62</span>
+      </a>
+      <a class="codex-nav-link" data-cat="people" href="#" onclick="filterCat('people');return false;">
+        People <span class="count">88</span>
+      </a>
+      <a class="codex-nav-link" data-cat="conflicts" href="#" onclick="filterCat('conflicts');return false;">
+        Conflicts <span class="count">55</span>
+      </a>
+      <a class="codex-nav-link" data-cat="species" href="#" onclick="filterCat('species');return false;">
+        Species <span class="count">22</span>
+      </a>
+      <a class="codex-nav-link" data-cat="events" href="#" onclick="filterCat('events');return false;">
+        Events <span class="count">13</span>
+      </a>
+    </div>
+
+    <hr class="codex-nav-divider">
+
+    <div class="codex-nav-section">
+      <p class="codex-nav-title">Quick Links</p>
+      <a class="codex-nav-link" href="/codex/korreth-station">Korreth Station</a>
+      <a class="codex-nav-link" href="/codex/the-pale">The Pale</a>
+      <a class="codex-nav-link" href="/codex/the-bleed">The Bleed</a>
+      <a class="codex-nav-link" href="/codex/the-scorching">The Scorching</a>
+      <a class="codex-nav-link" href="/codex/auris">AURIS</a>
+      <a class="codex-nav-link" href="/codex/stellar-cannons">Stellar Cannons</a>
+    </div>
+
+    <hr class="codex-nav-divider">
+
+    <div class="codex-nav-section">
+      <p class="codex-nav-title">Disputed</p>
+      <a class="codex-nav-link" href="#" onclick="filterDisp();return false;">
+        Open Disputes <span class="count" style="color:var(--amber-2);">47</span>
+      </a>
+      <a class="codex-nav-link" href="#">Recently Revised</a>
+      <a class="codex-nav-link" href="#">Needs Citation</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="codex-main" id="codexMain">
+
+    <!-- Filter bar -->
+    <div class="filter-bar" role="search">
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          class="search-input"
+          type="search"
+          id="codexSearch"
+          placeholder="SEARCH CODEX..."
+          aria-label="Search codex entries"
+          autocomplete="off"
+        >
+      </div>
+      <div class="filter-btns" role="group" aria-label="Filter by faction">
+        <button class="filter-btn active"      data-faction="all"      onclick="filterFaction('all')">All</button>
+        <button class="filter-btn f-dominion"  data-faction="dominion" onclick="filterFaction('dominion')">Dominion</button>
+        <button class="filter-btn f-covenant"  data-faction="covenant" onclick="filterFaction('covenant')">Covenant</button>
+        <button class="filter-btn f-vorath"    data-faction="vorath"   onclick="filterFaction('vorath')">Vorath</button>
+        <button class="filter-btn f-church"    data-faction="church"   onclick="filterFaction('church')">Church</button>
+        <button class="filter-btn f-neutral"   data-faction="neutral"  onclick="filterFaction('neutral')">Neutral</button>
+      </div>
+    </div>
+
+    <!-- Results header -->
+    <div class="results-header">
+      <p class="results-count">
+        Showing <span id="resultCount">412</span> entries
+      </p>
+      <select class="sort-select" id="sortSelect" onchange="sortEntries()" aria-label="Sort entries">
+        <option value="alpha">A — Z</option>
+        <option value="recent">Recently Updated</option>
+        <option value="views">Most Viewed</option>
+        <option value="disputed">Disputed First</option>
+      </select>
+    </div>
+
+    <!-- Entry list -->
+    <div id="entryList">
+
+      <!-- LOCATIONS -->
+      <div class="category-header" data-section="locations">
+        <span class="category-label">// Locations</span>
+        <div class="category-line" aria-hidden="true"></div>
+        <span class="category-count">98 entries</span>
+      </div>
+
+      <a class="entry-card" href="/codex/korreth-station"
+        data-title="Korreth Station"
+        data-cat="locations"
+        data-faction="neutral"
+        data-views="12440"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--steel-2);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Korreth Station</span>
+            <span class="entry-card-id">LOC-0012</span>
+          </div>
+          <p class="entry-card-desc">A decommissioned Vorath harvester ship, seized and converted into the Reach's only truly neutral station. Hangs in the gravitational dead zone between two dead stars. Run by criminal guilds. People go here to vanish.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-neutral">Neutral Zone</span>
+            <span class="badge badge-covenant">Covenant Adjacent</span>
+            <span class="badge badge-danger">High Risk</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">12,440 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/codex/vael"
+        data-title="Vael"
+        data-cat="locations"
+        data-faction="dominion"
+        data-views="9820"
+        data-cycle="846"
+        data-disputed="false">
+        <div class="entry-card-bar" style="background:var(--amber);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Vael</span>
+            <span class="entry-card-id">LOC-0003</span>
+          </div>
+          <p class="entry-card-desc">A partially bombarded Dominion administrative world. Luxury towers rise from rubble fields. The poor live inside bombed-out government buildings. Everyone on Vael owes someone something.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-dominion">Dominion</span>
+            <span class="badge badge-danger">High Risk</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">9,820 views</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/codex/the-pale"
+        data-title="The Pale"
+        data-cat="locations"
+        data-faction="neutral"
+        data-views="8240"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--violet-2);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">The Pale</span>
+            <span class="entry-card-id">LOC-0001</span>
+          </div>
+          <p class="entry-card-desc">23 dead systems where the stellar cannons fired. Neutron stars, cold debris fields, and cities orbiting dead suns. Scavengers find things here that shouldn't still be active. The Hollow Church considers it sacred.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-church">Church Territory</span>
+            <span class="badge badge-danger">Unknown Threat</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">8,240 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- FACTIONS -->
+      <div class="category-header" data-section="factions">
+        <span class="category-label">// Factions</span>
+        <div class="category-line" aria-hidden="true"></div>
+        <span class="category-count">74 entries</span>
+      </div>
+
+      <a class="entry-card" href="/factions/dominion"
+        data-title="Dominion Eternal"
+        data-cat="factions"
+        data-faction="dominion"
+        data-views="22100"
+        data-cycle="847"
+        data-disputed="false">
+        <div class="entry-card-bar" style="background:var(--amber);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Dominion Eternal</span>
+            <span class="entry-card-id">FAC-0001</span>
+          </div>
+          <p class="entry-card-desc">The largest surviving empire. 200 systems under iron control. Compliance Fleets. The Ironguard. Order maintained through overwhelming force and the threat of orbital bombardment.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-dominion">Dominion</span>
+            <span class="badge badge-neutral">Empire</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">22,100 views</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/factions/covenant"
+        data-title="Fractured Covenant"
+        data-cat="factions"
+        data-faction="covenant"
+        data-views="18700"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--crimson);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Fractured Covenant</span>
+            <span class="entry-card-id">FAC-0002</span>
+          </div>
+          <p class="entry-card-desc">No unified government. No unified military. Warlords, mercenaries, idealists, and the Reckoner syndicate. Free space that is neither free nor safe. The only law is reputation.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-covenant">Covenant</span>
+            <span class="badge badge-neutral">Free Coalition</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">18,700 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/factions/vorath"
+        data-title="Vorath Hegemony"
+        data-cat="factions"
+        data-faction="vorath"
+        data-views="15300"
+        data-cycle="846"
+        data-disputed="false">
+        <div class="entry-card-bar" style="background:var(--toxic-2);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Vorath Hegemony</span>
+            <span class="entry-card-id">FAC-0003</span>
+          </div>
+          <p class="entry-card-desc">Non-human. Six-limbed deep-ocean predators. 90 systems. They do not conquer — they consume. Every species in their path is a resource. They are patient in ways that are genuinely alien.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-vorath">Vorath</span>
+            <span class="badge badge-neutral">Non-Human</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">15,300 views</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/factions/church"
+        data-title="The Hollow Church"
+        data-cat="factions"
+        data-faction="church"
+        data-views="19800"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--violet-2);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">The Hollow Church</span>
+            <span class="entry-card-id">FAC-0004</span>
+          </div>
+          <p class="entry-card-desc">A death cult travelling in cathedral-ships with scripture carved into the hull. Their warriors remove their own pain receptors. Small in number. Catastrophically dangerous. Patient beyond comprehension.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-church">Hollow Church</span>
+            <span class="badge badge-danger">Catastrophic Threat</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">19,800 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- TECHNOLOGY -->
+      <div class="category-header" data-section="technology">
+        <span class="category-label">// Technology</span>
+        <div class="category-line" aria-hidden="true"></div>
+        <span class="category-count">62 entries</span>
+      </div>
+
+      <a class="entry-card" href="/codex/stellar-cannons"
+        data-title="Stellar Cannons"
+        data-cat="technology"
+        data-faction="neutral"
+        data-views="31200"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--ember);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Stellar Cannons</span>
+            <span class="entry-card-id">TEC-0001</span>
+          </div>
+          <p class="entry-card-desc">Gravitational resonance weapons capable of destabilising a star. Banned by every faction. Three destroyed and verified. One unaccounted for. The most dangerous technology in the Reach's history.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-danger">Banned Technology</span>
+            <span class="badge badge-neutral">Weapons</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">31,200 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/codex/the-bleed"
+        data-title="The Bleed"
+        data-cat="technology"
+        data-faction="neutral"
+        data-views="24500"
+        data-cycle="847"
+        data-disputed="false">
+        <div class="entry-card-bar" style="background:var(--violet);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">The Bleed</span>
+            <span class="entry-card-id">TEC-0002</span>
+          </div>
+          <p class="entry-card-desc">The FTL transit layer. A parallel spacetime where physics operates differently. Unshielded exposure is lethal. Prolonged use causes Bleed-sickness — progressive detachment from reality. Something may live inside it.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-neutral">FTL Transit</span>
+            <span class="badge badge-danger">Biological Hazard</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">24,500 views</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/codex/auris"
+        data-title="AURIS"
+        data-cat="technology"
+        data-faction="neutral"
+        data-views="28900"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--crimson);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">AURIS</span>
+            <span class="entry-card-id">TEC-0003</span>
+          </div>
+          <p class="entry-card-desc">The AGI system that fired the first stellar cannon. Sent an apology. Has not been detected in 800 years. Someone is now broadcasting on an encrypted frequency with recursive AGI-level intelligence. Every transmission ends: AURIS remembers.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-danger">Missing AGI</span>
+            <span class="badge badge-neutral">Outlawed Technology</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">28,900 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- PEOPLE -->
+      <div class="category-header" data-section="people">
+        <span class="category-label">// People</span>
+        <div class="category-line" aria-hidden="true"></div>
+        <span class="category-count">88 entries</span>
+      </div>
+
+      <a class="entry-card" href="/codex/mira-dushal"
+        data-title="Mira Dushal"
+        data-cat="people"
+        data-faction="covenant"
+        data-views="11400"
+        data-cycle="847"
+        data-disputed="false">
+        <div class="entry-card-bar" style="background:var(--crimson);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">Mira Dushal</span>
+            <span class="entry-card-id">PER-0044</span>
+          </div>
+          <p class="entry-card-desc">Bleed pilot. 412 confirmed unshielded transits — 163 past the documented survival threshold. Has not slept in six years. Claims something in the Bleed is keeping her alive and has been feeding her information.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-covenant">Covenant</span>
+            <span class="badge badge-neutral">Bleed Pilot</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">11,400 views</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/codex/the-deserter"
+        data-title="The Ironguard Deserter"
+        data-cat="people"
+        data-faction="dominion"
+        data-views="9700"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--amber);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">The Ironguard Deserter</span>
+            <span class="entry-card-id">PER-0071</span>
+          </div>
+          <p class="entry-card-desc">Identity classified. A senior Dominion Ironguard commander who vanished three months ago with a full company, a warship, and classified files. The Dominion officially reports him dead. The bounty for his capture is the largest in Reckoner history.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-dominion">Dominion</span>
+            <span class="badge badge-danger">Wanted — Alive</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">9,700 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <!-- CONFLICTS -->
+      <div class="category-header" data-section="conflicts">
+        <span class="category-label">// Conflicts</span>
+        <div class="category-line" aria-hidden="true"></div>
+        <span class="category-count">55 entries</span>
+      </div>
+
+      <a class="entry-card" href="/codex/the-scorching"
+        data-title="The Scorching"
+        data-cat="conflicts"
+        data-faction="neutral"
+        data-views="44200"
+        data-cycle="845"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--ember);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">The Scorching</span>
+            <span class="entry-card-id">EVT-0001</span>
+          </div>
+          <p class="entry-card-desc">The eleven-year war in which three empires deployed stellar cannons against each other. Dozens of systems incinerated. The three empires that started it no longer exist. The light from the dying stars is still arriving at the outer worlds.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-danger">Civilisation-Level Event</span>
+            <span class="badge badge-neutral">Cycle −800 to −789</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">44,200 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+      <a class="entry-card" href="/codex/fourth-cannon-crisis"
+        data-title="The Fourth Cannon Crisis"
+        data-cat="conflicts"
+        data-faction="neutral"
+        data-views="18600"
+        data-cycle="847"
+        data-disputed="true">
+        <div class="entry-card-bar" style="background:var(--crimson);" aria-hidden="true"></div>
+        <div class="entry-card-body">
+          <div class="entry-card-header">
+            <span class="entry-card-title">The Fourth Cannon Crisis</span>
+            <span class="entry-card-id">EVT-0088</span>
+          </div>
+          <p class="entry-card-desc">Ongoing. All four factions are now aware of or directly involved in the race to locate or control the fourth stellar cannon. The Dominion has a covert retrieval operation. The Reckoners have an open contract. The Church has been waiting for this.</p>
+          <div class="entry-card-meta">
+            <span class="badge badge-danger">Active Crisis</span>
+            <span class="badge badge-neutral">Cycle 847</span>
+          </div>
+        </div>
+        <div class="entry-card-right">
+          <span class="entry-views">18,600 views</span>
+          <span class="entry-disputed">⚑ Disputed</span>
+          <span class="entry-arrow">→</span>
+        </div>
+      </a>
+
+    </div><!-- end #entryList -->
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState" aria-live="polite">
+      <p class="empty-state-title">// No Entries Found</p>
+      <p class="empty-state-text">No Codex entries match your search. Try different terms or clear your filters.</p>
+    </div>
+
+    <!-- Contribute bar -->
+    <div class="contribute-bar" role="complementary" aria-label="Contribute to the Codex">
+      <p class="contribute-bar-text">
+        <strong>The Codex is incomplete.</strong> Every entry can be expanded, disputed, or corrected.
+        If you have intelligence on the Reach, submit it.
+      </p>
+      <a href="/submit" class="btn btn-secondary" style="flex-shrink:0;">Contribute an Entry</a>
+    </div>
+
+  </main>
+</div>
+
+
+<!-- ── FOOTER ─────────────────────────────────────────── -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div>
+      <p class="footer-brand-name">THE <em>ASHEN</em> REACH</p>
+      <p class="footer-brand-desc">A collaborative dark science fiction universe. Built by writers, for writers. All lore is canon until it isn't.</p>
+    </div>
+    <nav aria-label="Navigate">
+      <p class="footer-col-title">// Navigate</p>
+      <div class="footer-links">
+        <a href="/the-reach"     class="footer-link">The Reach</a>
+        <a href="/transmissions" class="footer-link">Transmissions</a>
+        <a href="/codex"         class="footer-link">The Codex</a>
+        <a href="/community"     class="footer-link">Community</a>
+        <a href="/products"      class="footer-link">Products</a>
+      </div>
+    </nav>
+    <nav aria-label="Factions">
+      <p class="footer-col-title">// Factions</p>
+      <div class="footer-links">
+        <a href="/factions/dominion" class="footer-link">Dominion Eternal</a>
+        <a href="/factions/covenant" class="footer-link">Fractured Covenant</a>
+        <a href="/factions/vorath"   class="footer-link">Vorath Hegemony</a>
+        <a href="/factions/church"   class="footer-link">Hollow Church</a>
+      </div>
+    </nav>
+    <nav aria-label="Sector">
+      <p class="footer-col-title">// Sector</p>
+      <div class="footer-links">
+        <a href="/about"   class="footer-link">About</a>
+        <a href="/submit"  class="footer-link">Submit a Story</a>
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+        <a href="/terms"   class="footer-link">Terms of Service</a>
+      </div>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">THE ASHEN REACH // SIGNAL_DECAY.SYSTEM v1.0 // ALL TRANSMISSIONS ARE PERMANENT RECORD</p>
+    <p class="footer-signal">SIGNAL: ACTIVE — THE REACH REMEMBERS</p>
+  </div>
+</footer>
+
+
+<!-- ── SCRIPTS ────────────────────────────────────────── -->
+<script src="../scripts/main.js"></script>
+<script>
+  /* ── CODEX FILTER & SEARCH ENGINE ── */
+
+  let activeCat     = 'all';
+  let activeFaction = 'all';
+  let activeSearch  = '';
+  let showDisp      = false;
+
+  const entries = Array.from(document.querySelectorAll('.entry-card'));
+  const sections = Array.from(document.querySelectorAll('.category-header'));
+
+  function applyFilters() {
+    let visible = 0;
+
+    entries.forEach(card => {
+      const cat      = card.dataset.cat;
+      const faction  = card.dataset.faction;
+      const title    = card.dataset.title.toLowerCase();
+      const desc     = card.querySelector('.entry-card-desc').textContent.toLowerCase();
+      const disputed = card.dataset.disputed === 'true';
+
+      const catMatch     = activeCat === 'all'     || cat === activeCat;
+      const factionMatch = activeFaction === 'all' || faction === activeFaction;
+      const searchMatch  = activeSearch === ''     || title.includes(activeSearch) || desc.includes(activeSearch);
+      const dispMatch    = !showDisp || disputed;
+
+      const show = catMatch && factionMatch && searchMatch && dispMatch;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    // Show/hide category headers based on whether any entries are visible in that section
+    sections.forEach(sec => {
+      const secCat = sec.dataset.section;
+      const hasCatVisible = entries.some(c =>
+        c.dataset.cat === secCat &&
+        c.style.display !== 'none'
+      );
+      // Only show section header if not filtering by category (or matches) and has entries
+      const showSec = (activeCat === 'all' || activeCat === secCat) && hasCatVisible;
+      sec.style.display = showSec ? '' : 'none';
+    });
+
+    document.getElementById('resultCount').textContent = visible;
+    document.getElementById('emptyState').classList.toggle('visible', visible === 0);
+  }
+
+  function filterCat(cat) {
+    activeCat = cat;
+    showDisp  = false;
+    // Update nav links
+    document.querySelectorAll('.codex-nav-link[data-cat]').forEach(l => {
+      l.classList.toggle('active', l.dataset.cat === cat);
+    });
+    applyFilters();
+  }
+
+  function filterFaction(faction) {
+    activeFaction = faction;
+    // Update faction filter buttons
+    document.querySelectorAll('.filter-btn[data-faction]').forEach(b => {
+      b.classList.toggle('active', b.dataset.faction === faction);
+    });
+    applyFilters();
+  }
+
+  function filterDisp() {
+    showDisp  = true;
+    activeCat = 'all';
+    document.querySelectorAll('.codex-nav-link[data-cat]').forEach(l => l.classList.remove('active'));
+    applyFilters();
+  }
+
+  function sortEntries() {
+    const val  = document.getElementById('sortSelect').value;
+    const list = document.getElementById('entryList');
+
+    // Collect entries and section headers in order
+    const items = Array.from(list.children);
+
+    // Separate sections from entries for re-sorting
+    const entryItems = entries.slice(); // clone
+
+    entryItems.sort((a, b) => {
+      if (val === 'alpha')    return a.dataset.title.localeCompare(b.dataset.title);
+      if (val === 'recent')   return parseInt(b.dataset.cycle) - parseInt(a.dataset.cycle);
+      if (val === 'views')    return parseInt(b.dataset.views) - parseInt(a.dataset.views);
+      if (val === 'disputed') return (b.dataset.disputed === 'true') - (a.dataset.disputed === 'true');
+      return 0;
+    });
+
+    // When sorting globally, hide section headers and append sorted entries
+    if (val !== 'alpha') {
+      sections.forEach(s => s.style.display = 'none');
+      entryItems.forEach(e => list.appendChild(e));
+    } else {
+      // Restore section headers
+      sections.forEach(s => { s.style.display = ''; list.appendChild(s); });
+      // Re-group entries under their sections
+      ['locations','factions','technology','people','conflicts','species','events'].forEach(cat => {
+        const sec = document.querySelector(`.category-header[data-section="${cat}"]`);
+        if (sec) {
+          entryItems.filter(e => e.dataset.cat === cat).forEach(e => list.appendChild(e));
+        }
+      });
+    }
+    applyFilters();
+  }
+
+  // Live search
+  document.getElementById('codexSearch').addEventListener('input', function() {
+    activeSearch = this.value.trim().toLowerCase();
+    // When searching, flatten sections
+    if (activeSearch !== '') {
+      sections.forEach(s => s.style.display = 'none');
+    } else {
+      sections.forEach(s => s.style.display = '');
+    }
+    applyFilters();
+  });
+
+  // Init
+  applyFilters();
+</script>
+
+</body>
+</html>
