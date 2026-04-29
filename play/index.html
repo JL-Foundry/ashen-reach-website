@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal Decay — Play | The Ashen Reach</title>
+  <meta name="description" content="A text-based RPG set in the Ashen Reach universe. Arrive at Korreth Station. Choose your allegiance. Survive.">
+  <link rel="canonical" href="https://theashenreach.com/play">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><circle cx='16' cy='16' r='12' fill='none' stroke='%238b0000' stroke-width='1.5'/><circle cx='16' cy='16' r='4' fill='%23cc1a1a'/></svg>">
+  <link rel="stylesheet" href="../styles/signal-decay.css">
+  <style>
+    /* ══ GAME SHELL ══════════════════════════════════════════ */
+    body { overflow: hidden; height: 100vh; }
+
+    .game-shell {
+      display: grid;
+      grid-template-rows: var(--nav-height) 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ══ GAME NAV ════════════════════════════════════════════ */
+    .game-nav {
+      background: rgba(8,8,8,0.97);
+      border-bottom: 1px solid var(--blood);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-4);
+      gap: var(--space-4);
+      flex-shrink: 0;
+    }
+    .game-nav-logo {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .game-nav-logo em { color: var(--crimson); font-style: normal; }
+    .game-nav-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      border-left: 1px solid var(--ash-2);
+      padding-left: var(--space-4);
+    }
+    .game-nav-title em { color: var(--crimson); font-style: normal; }
+    .game-nav-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .game-nav-btn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      border: 1px solid var(--ash-2);
+      padding: 0.3rem 0.65rem;
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .game-nav-btn:hover { border-color: var(--steel-2); color: var(--ghost); }
+    .game-nav-btn.danger { color: var(--crimson); border-color: var(--blood); }
+    .game-nav-btn.danger:hover { background: var(--blood); color: var(--white-2); }
+
+    /* ══ GAME VIEWPORT ═══════════════════════════════════════ */
+    .game-viewport {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ══ MAIN TERMINAL ═══════════════════════════════════════ */
+    .terminal {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Location header */
+    .location-header {
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 1px solid var(--ash-2);
+      background: var(--void-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      gap: var(--space-4);
+    }
+    .location-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white-2);
+    }
+    .location-sub {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .location-meta {
+      display: flex;
+      gap: var(--space-4);
+      flex-shrink: 0;
+    }
+    .loc-meta-item { text-align: right; }
+    .loc-meta-label { font-family: var(--font-mono); font-size: 9px; color: var(--steel); letter-spacing: 0.1em; text-transform: uppercase; }
+    .loc-meta-val   { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; color: var(--ghost); }
+
+    /* Narrative output */
+    .narrative-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-5);
+      scroll-behavior: smooth;
+    }
+    .narrative-wrap::-webkit-scrollbar { width: 4px; }
+    .narrative-wrap::-webkit-scrollbar-track { background: var(--void); }
+    .narrative-wrap::-webkit-scrollbar-thumb { background: var(--blood); }
+
+    .narrative-output { display: flex; flex-direction: column; gap: var(--space-4); }
+
+    /* Scene card */
+    .scene-card {
+      border-left: 2px solid var(--ash-2);
+      padding-left: var(--space-4);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .scene-card.visible { opacity: 1; transform: translateY(0); }
+    .scene-card.old { opacity: 0.4; }
+
+    .scene-timestamp {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--blood);
+      text-transform: uppercase;
+      margin-bottom: var(--space-2);
+    }
+    .scene-text {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--ghost);
+      line-height: 1.8;
+    }
+    .scene-text p { margin-bottom: 0.75rem; }
+    .scene-text p:last-child { margin-bottom: 0; }
+    .scene-text strong { color: var(--white-2); font-weight: 600; }
+    .scene-text em     { color: var(--amber-2); font-style: normal; }
+    .scene-text .char  { color: var(--crimson-2); font-style: italic; }
+
+    /* Choice result */
+    .choice-echo {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--steel-2);
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--ash-2);
+      background: var(--void-3);
+      margin-bottom: var(--space-2);
+    }
+    .choice-echo::before { content: '> '; color: var(--crimson); }
+
+    /* Skill check result */
+    .skill-result {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid;
+      margin-bottom: var(--space-2);
+    }
+    .skill-result.success { color: var(--toxic-2); border-color: var(--toxic); background: rgba(42,90,26,0.1); }
+    .skill-result.failure { color: var(--ember);   border-color: var(--crimson); background: rgba(204,26,26,0.08); }
+
+    /* Faction shift notification */
+    .faction-shift {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--ash-2);
+      background: var(--void-2);
+      margin-bottom: var(--space-2);
+      opacity: 0;
+      animation: fadeInShift 0.5s ease 0.2s forwards;
+    }
+    @keyframes fadeInShift {
+      to { opacity: 1; }
+    }
+    .fs-dot { width: 6px; height: 6px; flex-shrink: 0; }
+    .fs-label { color: var(--steel-2); flex: 1; }
+    .fs-change { font-weight: 700; }
+    .fs-pos { color: var(--toxic-2); }
+    .fs-neg { color: var(--ember); }
+
+    /* Chapter break */
+    .chapter-break {
+      text-align: center;
+      padding: var(--space-5) 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .chapter-break-line {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blood), transparent);
+    }
+    .chapter-break-label {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--white-2);
+    }
+    .chapter-break-sub {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+    }
+
+    /* Typing cursor */
+    .typing-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--crimson);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ══ CHOICE PANEL ════════════════════════════════════════ */
+    .choice-panel {
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid var(--blood);
+      background: var(--void-2);
+      flex-shrink: 0;
+    }
+    .choice-prompt {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .choices-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .choice-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      background: transparent;
+      border: 1px solid var(--ash-2);
+      padding: var(--space-3) var(--space-4);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      text-align: left;
+      width: 100%;
+    }
+    .choice-btn:hover {
+      border-color: var(--crimson);
+      background: rgba(139,0,0,0.06);
+    }
+    .choice-btn:focus {
+      outline: none;
+      border-color: var(--crimson);
+    }
+    .choice-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .choice-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--crimson);
+      flex-shrink: 0;
+      padding-top: 1px;
+      min-width: 20px;
+    }
+    .choice-body {}
+    .choice-text {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--white);
+      line-height: 1.4;
+    }
+    .choice-hint {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel-2);
+      margin-top: 3px;
+      letter-spacing: 0.06em;
+    }
+    .choice-hint .skill-tag {
+      color: var(--amber-2);
+      border: 1px solid var(--amber);
+      padding: 0 4px;
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Continue button */
+    .continue-btn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      border: 1px solid var(--blood);
+      padding: var(--space-3) var(--space-5);
+      background: transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      width: 100%;
+      margin-top: var(--space-2);
+    }
+    .continue-btn:hover { background: var(--blood); color: var(--white-2); }
+
+    /* ══ SIDE PANEL ══════════════════════════════════════════ */
+    .side-panel {
+      border-left: 1px solid var(--ash-2);
+      background: var(--void-2);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    .side-panel::-webkit-scrollbar { width: 3px; }
+    .side-panel::-webkit-scrollbar-thumb { background: var(--ash-2); }
+
+    .sp-block { border-bottom: 1px solid var(--ash-2); }
+    .sp-header {
+      padding: 0.55rem var(--space-4);
+      background: var(--void-3);
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--crimson);
+      text-transform: uppercase;
+    }
+    .sp-body { padding: var(--space-3) var(--space-4); }
+
+    /* Character info */
+    .char-name {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-2);
+      margin-bottom: 2px;
+    }
+    .char-background {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--ash-2);
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-name { font-family: var(--font-mono); font-size: 9px; color: var(--steel-2); letter-spacing: 0.08em; text-transform: uppercase; }
+    .stat-val  { font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--ghost); }
+    .stat-pips { display: flex; gap: 2px; }
+    .pip { width: 8px; height: 8px; border: 1px solid var(--ash-3); }
+    .pip.filled { background: var(--crimson); border-color: var(--crimson); }
+
+    /* Faction standing */
+    .faction-standing { display: flex; flex-direction: column; gap: var(--space-2); }
+    .fs-row {}
+    .fs-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .fs-faction-name { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .fs-score { font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; }
+    .fs-bar-track { height: 3px; background: var(--ash-2); position: relative; }
+    .fs-bar-fill  { height: 100%; transition: width 0.6s ease; }
+    .fs-bar-centre {
+      position: absolute;
+      left: 50%;
+      top: -2px;
+      width: 1px;
+      height: 7px;
+      background: var(--ash-3);
+    }
+
+    /* Transmission log */
+    .log-list { display: flex; flex-direction: column; gap: var(--space-2); max-height: 260px; overflow-y: auto; }
+    .log-list::-webkit-scrollbar { width: 2px; }
+    .log-list::-webkit-scrollbar-thumb { background: var(--ash-2); }
+    .log-item {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel-2);
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--ash-2);
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-item .log-cycle { color: var(--blood); font-size: 8px; display: block; margin-bottom: 2px; }
+    .log-item .log-text  { color: var(--ghost); }
+
+    /* ══ SCREENS ═════════════════════════════════════════════ */
+    .screen {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--void);
+    }
+    .screen.hidden { display: none; }
+
+    /* Title screen */
+    .title-screen-inner {
+      text-align: center;
+      max-width: 600px;
+      padding: var(--space-6);
+    }
+    .title-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: var(--space-4);
+    }
+    .title-main {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      line-height: 0.9;
+      margin-bottom: var(--space-3);
+    }
+    .title-main em { color: var(--crimson); font-style: normal; display: block; }
+    .title-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-6);
+    }
+    .title-desc {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--ghost);
+      line-height: 1.7;
+      margin-bottom: var(--space-6);
+    }
+    .title-btns { display: flex; flex-direction: column; gap: var(--space-3); align-items: center; }
+    .title-btn {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.65rem 2.5rem;
+      border: 1px solid;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: transparent;
+      min-width: 240px;
+    }
+    .title-btn-primary { color: var(--white-2); background: var(--blood); border-color: var(--crimson); }
+    .title-btn-primary:hover { background: var(--crimson); box-shadow: 0 0 24px rgba(204,26,26,0.3); }
+    .title-btn-secondary { color: var(--ghost); border-color: var(--ash-3); }
+    .title-btn-secondary:hover { border-color: var(--steel-2); color: var(--white); }
+    .title-note { font-family: var(--font-mono); font-size: 9px; color: var(--steel); letter-spacing: 0.1em; margin-top: var(--space-4); }
+
+    /* Character creation screen */
+    .create-screen-inner {
+      max-width: 580px;
+      width: 100%;
+      padding: var(--space-6);
+    }
+    .create-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      margin-bottom: 0.3rem;
+    }
+    .create-sub {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-5);
+    }
+    .create-field { margin-bottom: var(--space-4); }
+    .create-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      display: block;
+      margin-bottom: var(--space-2);
+    }
+    .create-input {
+      width: 100%;
+      background: var(--void-3);
+      border: 1px solid var(--ash-2);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      padding: 0.65rem var(--space-4);
+      outline: none;
+      letter-spacing: 0.08em;
+      transition: border-color var(--transition-fast);
+    }
+    .create-input:focus { border-color: var(--crimson); }
+    .create-input::placeholder { color: var(--steel); }
+
+    /* Background cards */
+    .bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--ash-2); margin-bottom: var(--space-5); }
+    .bg-card {
+      background: var(--void-2);
+      padding: var(--space-4);
+      cursor: pointer;
+      transition: background var(--transition-fast);
+      border: 2px solid transparent;
+      margin: -1px;
+    }
+    .bg-card:hover { background: var(--void-3); }
+    .bg-card.selected { border-color: var(--crimson); background: rgba(139,0,0,0.08); }
+    .bg-card-name {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--white-2);
+      margin-bottom: 0.3rem;
+    }
+    .bg-card-desc {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--ghost);
+      line-height: 1.5;
+      margin-bottom: var(--space-3);
+    }
+    .bg-card-stats { display: flex; flex-direction: column; gap: 2px; }
+    .bg-stat-line {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--steel-2);
+      letter-spacing: 0.06em;
+    }
+    .bg-stat-line span { color: var(--crimson-2); }
+
+    /* ══ MOBILE ══════════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .game-viewport { grid-template-columns: 1fr; }
+      .side-panel { display: none; }
+      .location-meta { display: none; }
+      .bg-grid { grid-template-columns: 1fr; }
+      .title-main { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ TITLE SCREEN ══════════════════════════════════════════ -->
+<div class="screen" id="titleScreen">
+  <div class="title-screen-inner">
+    <p class="title-eyebrow">// The Ashen Reach · Interactive Transmission</p>
+    <h1 class="title-main">
+      Signal
+      <em>Decay</em>
+    </h1>
+    <p class="title-sub">A Text RPG from the Ashen Reach</p>
+    <p class="title-desc">
+      You have just docked at Korreth Station. You have no allegiance,
+      no reputation, and no idea why someone you've never met knows your name.
+      Every choice you make shifts the balance of power around you.
+      Some choices cannot be undone.
+    </p>
+    <div class="title-btns">
+      <button class="title-btn title-btn-primary" onclick="showCreateScreen()">
+        Begin Transmission
+      </button>
+      <button class="title-btn title-btn-secondary" onclick="showCreateScreen()">
+        Continue — Load Save
+      </button>
+    </div>
+    <p class="title-note">// Progress saves to your Ashen Reach account · Guest play available for the Prologue</p>
+  </div>
+</div>
+
+<!-- ══ CHARACTER CREATION SCREEN ══════════════════════════════ -->
+<div class="screen hidden" id="createScreen">
+  <div class="create-screen-inner">
+    <p class="section-eyebrow" style="margin-bottom:var(--space-2);">// Character Creation</p>
+    <h2 class="create-title">Identify Yourself</h2>
+    <p class="create-sub">Your record will be permanent. Choose carefully.</p>
+
+    <div class="create-field">
+      <label class="create-label" for="charName">Callsign / Name</label>
+      <input class="create-input" type="text" id="charName" placeholder="ENTER CALLSIGN..." maxlength="24" autocomplete="off">
+    </div>
+
+    <div class="create-field">
+      <label class="create-label">Background</label>
+      <div class="bg-grid" id="bgGrid">
+        <div class="bg-card selected" data-bg="pilot" onclick="selectBg(this,'pilot')">
+          <p class="bg-card-name">Bleed Pilot</p>
+          <p class="bg-card-desc">You have made more transits than most people will in a lifetime. The Bleed has left marks on you that doctors pretend not to notice.</p>
+          <div class="bg-card-stats">
+            <p class="bg-stat-line">READ <span>●●●○○</span></p>
+            <p class="bg-stat-line">MOVE <span>●●●●○</span></p>
+            <p class="bg-stat-line">FIGHT <span>●●○○○</span></p>
+            <p class="bg-stat-line" style="margin-top:4px;color:var(--toxic-2);">+ Covenant +10</p>
+          </div>
+        </div>
+        <div class="bg-card" data-bg="reckoner" onclick="selectBg(this,'reckoner')">
+          <p class="bg-card-name">Reckoner</p>
+          <p class="bg-card-desc">Former contractor for the Reckoner Syndicate. You left under circumstances you don't discuss. They haven't forgotten you either.</p>
+          <div class="bg-card-stats">
+            <p class="bg-stat-line">READ <span>●●○○○</span></p>
+            <p class="bg-stat-line">MOVE <span>●●●○○</span></p>
+            <p class="bg-stat-line">FIGHT <span>●●●●○</span></p>
+            <p class="bg-stat-line" style="margin-top:4px;color:var(--toxic-2);">+ Covenant +5 · Dominion -5</p>
+          </div>
+        </div>
+        <div class="bg-card" data-bg="scavenger" onclick="selectBg(this,'scavenger')">
+          <p class="bg-card-name">Void Scavenger</p>
+          <p class="bg-card-desc">You make your living in dead systems — the Pale, derelict stations, the debris fields no one else will enter. You know things about silence.</p>
+          <div class="bg-card-stats">
+            <p class="bg-stat-line">READ <span>●●●●○</span></p>
+            <p class="bg-stat-line">MOVE <span>●●●○○</span></p>
+            <p class="bg-stat-line">FIGHT <span>●●○○○</span></p>
+            <p class="bg-stat-line" style="margin-top:4px;color:var(--toxic-2);">+ Neutral +10</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:var(--space-3);">
+      <button class="title-btn title-btn-primary" onclick="startGame()" style="flex:1;padding:0.65rem;">
+        Transmit Identity — Begin
+      </button>
+      <button class="title-btn title-btn-secondary" onclick="showTitle()" style="padding:0.65rem var(--space-4);">
+        Back
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAME SHELL ═════════════════════════════════════════════ -->
+<div class="game-shell hidden" id="gameShell">
+
+  <!-- Game Nav -->
+  <nav class="game-nav">
+    <a href="/" class="game-nav-logo">THE <em>ASHEN</em> REACH</a>
+    <div class="game-nav-title">
+      <em>SIGNAL DECAY</em> · Prologue
+    </div>
+    <div class="game-nav-right">
+      <button class="game-nav-btn" onclick="toggleLog()">Transmission Log</button>
+      <button class="game-nav-btn" onclick="saveGame()">Save</button>
+      <button class="game-nav-btn danger" onclick="confirmQuit()">Quit</button>
+    </div>
+  </nav>
+
+  <!-- Game Viewport -->
+  <div class="game-viewport">
+
+    <!-- Terminal -->
+    <div class="terminal">
+      <div class="location-header">
+        <div>
+          <p class="location-name" id="locationName">Korreth Station</p>
+          <p class="location-sub"  id="locationSub">Transit Docks · Level 7</p>
+        </div>
+        <div class="location-meta">
+          <div class="loc-meta-item">
+            <p class="loc-meta-label">Cycle</p>
+            <p class="loc-meta-val">847.3</p>
+          </div>
+          <div class="loc-meta-item">
+            <p class="loc-meta-label">Chapter</p>
+            <p class="loc-meta-val" id="chapterLabel">Prologue</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="narrative-wrap" id="narrativeWrap">
+        <div class="narrative-output" id="narrativeOutput"></div>
+      </div>
+
+      <div class="choice-panel" id="choicePanel">
+        <p class="choice-prompt">// Select your action</p>
+        <div class="choices-list" id="choicesList"></div>
+      </div>
+    </div>
+
+    <!-- Side Panel -->
+    <aside class="side-panel">
+
+      <div class="sp-block">
+        <p class="sp-header">// Character</p>
+        <div class="sp-body">
+          <p class="char-name"       id="spCharName">—</p>
+          <p class="char-background" id="spCharBg">—</p>
+          <div class="stat-row">
+            <span class="stat-name">Read</span>
+            <div class="stat-pips" id="pipRead"></div>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Move</span>
+            <div class="stat-pips" id="pipMove"></div>
+          </div>
+          <div class="stat-row">
+            <span class="stat-name">Fight</span>
+            <div class="stat-pips" id="pipFight"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sp-block">
+        <p class="sp-header">// Faction Standing</p>
+        <div class="sp-body">
+          <div class="faction-standing" id="factionStanding"></div>
+        </div>
+      </div>
+
+      <div class="sp-block" id="logBlock">
+        <p class="sp-header">// Transmission Log</p>
+        <div class="sp-body">
+          <div class="log-list" id="logList"></div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<!-- ══ JAVASCRIPT ENGINE ══════════════════════════════════════ -->
+<script>
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════════ */
+const STATE = {
+  player: {
+    name: '',
+    background: 'pilot',
+    stats: { read: 3, move: 3, fight: 2 }
+  },
+  factions: {
+    dominion:  0,
+    covenant:  0,
+    vorath:    0,
+    church:    0
+  },
+  flags: {},      // boolean story flags
+  log: [],        // transmission log entries
+  scene: null,    // current scene id
+  cycle: '847.3'
+};
+
+const FACTION_META = {
+  dominion: { name: 'Dominion',  colour: '#c47a1a', barColour: '#c47a1a' },
+  covenant: { name: 'Covenant',  colour: '#cc1a1a', barColour: '#cc1a1a' },
+  vorath:   { name: 'Vorath',    colour: '#4aaa1a', barColour: '#4aaa1a' },
+  church:   { name: 'Church',    colour: '#9966cc', barColour: '#9966cc' }
+};
+
+const BG_DATA = {
+  pilot:     { label: 'Bleed Pilot',      stats: { read:3, move:4, fight:2 }, factionBonus: { covenant: 10 } },
+  reckoner:  { label: 'Reckoner',         stats: { read:2, move:3, fight:4 }, factionBonus: { covenant: 5, dominion: -5 } },
+  scavenger: { label: 'Void Scavenger',   stats: { read:4, move:3, fight:2 }, factionBonus: {} }
+};
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN MANAGEMENT
+════════════════════════════════════════════════════════════ */
+function showTitle()        { setScreen('titleScreen'); }
+function showCreateScreen() { setScreen('createScreen'); }
+
+function setScreen(id) {
+  ['titleScreen','createScreen','gameShell'].forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.classList.toggle('hidden', s !== id);
+  });
+}
+
+function selectBg(el, bg) {
+  document.querySelectorAll('.bg-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  STATE.player.background = bg;
+}
+
+/* ════════════════════════════════════════════════════════════
+   GAME START
+════════════════════════════════════════════════════════════ */
+function startGame() {
+  const nameInput = document.getElementById('charName').value.trim();
+  if (!nameInput) {
+    document.getElementById('charName').style.borderColor = 'var(--crimson)';
+    document.getElementById('charName').placeholder = 'CALLSIGN REQUIRED...';
+    return;
+  }
+
+  STATE.player.name = nameInput.toUpperCase();
+  const bg = BG_DATA[STATE.player.background];
+  STATE.player.stats = { ...bg.stats };
+
+  // Apply background faction bonuses
+  Object.entries(bg.factionBonus).forEach(([f, v]) => {
+    STATE.factions[f] = (STATE.factions[f] || 0) + v;
+  });
+
+  // Init UI
+  setScreen('gameShell');
+  updateSidePanel();
+
+  // Begin prologue
+  setTimeout(() => runScene('prologue_dock'), 400);
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCENE ENGINE
+════════════════════════════════════════════════════════════ */
+function runScene(sceneId) {
+  STATE.scene = sceneId;
+  const scene = SCENES[sceneId];
+  if (!scene) { console.error('Scene not found:', sceneId); return; }
+
+  // Update location header
+  if (scene.location) {
+    document.getElementById('locationName').textContent = scene.location.name;
+    document.getElementById('locationSub').textContent  = scene.location.sub;
+  }
+
+  // Chapter label
+  if (scene.chapter) {
+    document.getElementById('chapterLabel').textContent = scene.chapter;
+  }
+
+  // Chapter break
+  if (scene.chapterBreak) {
+    appendChapterBreak(scene.chapterBreak.title, scene.chapterBreak.sub);
+  }
+
+  // Render narrative
+  appendNarrative(scene.text, scene.timestamp || STATE.cycle);
+
+  // Apply any auto faction shifts
+  if (scene.autoShifts) {
+    scene.autoShifts.forEach(s => applyFactionShift(s.faction, s.amount, s.reason));
+  }
+
+  // Set flags
+  if (scene.setFlags) {
+    scene.setFlags.forEach(f => { STATE.flags[f] = true; });
+  }
+
+  // Render choices
+  renderChoices(scene.choices || []);
+}
+
+function appendNarrative(html, timestamp) {
+  const output = document.getElementById('narrativeOutput');
+
+  // Fade old cards
+  output.querySelectorAll('.scene-card:not(.old)').forEach(c => c.classList.add('old'));
+
+  const card = document.createElement('div');
+  card.className = 'scene-card';
+  card.innerHTML = `
+    <p class="scene-timestamp">// ${timestamp} · Korreth Station</p>
+    <div class="scene-text">${html}</div>
+  `;
+  output.appendChild(card);
+
+  requestAnimationFrame(() => {
+    card.classList.add('visible');
+    scrollNarrative();
+  });
+}
+
+function appendChapterBreak(title, sub) {
+  const output = document.getElementById('narrativeOutput');
+  const el = document.createElement('div');
+  el.className = 'chapter-break';
+  el.innerHTML = `
+    <div class="chapter-break-line"></div>
+    <p class="chapter-break-label">${title}</p>
+    <p class="chapter-break-sub">${sub}</p>
+    <div class="chapter-break-line"></div>
+  `;
+  output.appendChild(el);
+}
+
+function appendChoiceEcho(text) {
+  const output = document.getElementById('narrativeOutput');
+  const el = document.createElement('div');
+  el.className = 'choice-echo';
+  el.textContent = text;
+  output.appendChild(el);
+}
+
+function appendSkillResult(success, text) {
+  const output = document.getElementById('narrativeOutput');
+  const el = document.createElement('div');
+  el.className = `skill-result ${success ? 'success' : 'failure'}`;
+  el.innerHTML = success
+    ? `✓ SUCCESS — ${text}`
+    : `✕ FAILURE — ${text}`;
+  output.appendChild(el);
+}
+
+function scrollNarrative() {
+  const wrap = document.getElementById('narrativeWrap');
+  setTimeout(() => wrap.scrollTo({ top: wrap.scrollHeight, behavior: 'smooth' }), 100);
+}
+
+/* ════════════════════════════════════════════════════════════
+   CHOICES
+════════════════════════════════════════════════════════════ */
+function renderChoices(choices) {
+  const panel = document.getElementById('choicePanel');
+  const list  = document.getElementById('choicesList');
+  list.innerHTML = '';
+
+  // Filter choices based on flags/conditions
+  const available = choices.filter(c => {
+    if (!c.requires) return true;
+    return c.requires.every(r => STATE.flags[r]);
+  });
+
+  if (available.length === 0) {
+    panel.style.display = 'none';
+    return;
+  }
+  panel.style.display = '';
+
+  available.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+
+    let hintHtml = '';
+    if (choice.skill) {
+      hintHtml = `<p class="choice-hint"><span class="skill-tag">${choice.skill.stat.toUpperCase()} CHECK · DC ${choice.skill.dc}</span></p>`;
+    }
+    if (choice.hint) {
+      hintHtml += `<p class="choice-hint">${choice.hint}</p>`;
+    }
+
+    btn.innerHTML = `
+      <span class="choice-num">[${i + 1}]</span>
+      <div class="choice-body">
+        <p class="choice-text">${choice.text}</p>
+        ${hintHtml}
+      </div>
+    `;
+    btn.onclick = () => handleChoice(choice, btn);
+    list.appendChild(btn);
+  });
+}
+
+function handleChoice(choice, btn) {
+  // Disable all choice buttons
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+
+  // Echo choice
+  appendChoiceEcho(choice.text);
+
+  // Skill check if required
+  if (choice.skill) {
+    const stat = STATE.player.stats[choice.skill.stat];
+    const roll = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1; // 2d6
+    const total = roll + stat;
+    const success = total >= choice.skill.dc;
+    appendSkillResult(success, `${choice.skill.stat.toUpperCase()} roll ${roll} + ${stat} = ${total} vs DC ${choice.skill.dc}`);
+
+    // Apply faction shifts for skill outcome
+    if (success && choice.skill.onSuccess?.shifts) {
+      choice.skill.onSuccess.shifts.forEach(s => applyFactionShift(s.faction, s.amount, s.reason));
+    }
+    if (!success && choice.skill.onFail?.shifts) {
+      choice.skill.onFail.shifts.forEach(s => applyFactionShift(s.faction, s.amount, s.reason));
+    }
+
+    // Navigate to skill-dependent scene
+    const nextScene = success
+      ? (choice.skill.onSuccess?.next || choice.next)
+      : (choice.skill.onFail?.next   || choice.next);
+
+    // Log
+    addLog(choice.logText || choice.text);
+
+    setTimeout(() => runScene(nextScene), 800);
+    return;
+  }
+
+  // Apply faction shifts
+  if (choice.shifts) {
+    choice.shifts.forEach(s => applyFactionShift(s.faction, s.amount, s.reason));
+  }
+
+  // Set flags
+  if (choice.setFlags) {
+    choice.setFlags.forEach(f => { STATE.flags[f] = true; });
+  }
+
+  // Log
+  addLog(choice.logText || choice.text);
+
+  // Navigate
+  if (choice.next) {
+    setTimeout(() => runScene(choice.next), 500);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   FACTION SYSTEM
+════════════════════════════════════════════════════════════ */
+function applyFactionShift(faction, amount, reason) {
+  STATE.factions[faction] = Math.max(-100, Math.min(100, (STATE.factions[faction] || 0) + amount));
+
+  const output = document.getElementById('narrativeOutput');
+  const meta   = FACTION_META[faction];
+  const el = document.createElement('div');
+  el.className = 'faction-shift';
+  el.innerHTML = `
+    <div class="fs-dot" style="background:${meta.colour}"></div>
+    <span class="fs-label">${meta.name} standing</span>
+    <span class="fs-change ${amount >= 0 ? 'fs-pos' : 'fs-neg'}">${amount >= 0 ? '+' : ''}${amount}</span>
+  `;
+  output.appendChild(el);
+
+  updateFactionBars();
+  scrollNarrative();
+}
+
+/* ════════════════════════════════════════════════════════════
+   UI UPDATES
+════════════════════════════════════════════════════════════ */
+function updateSidePanel() {
+  document.getElementById('spCharName').textContent = STATE.player.name;
+  document.getElementById('spCharBg').textContent   = '// ' + BG_DATA[STATE.player.background].label;
+  renderPips('pipRead',  STATE.player.stats.read);
+  renderPips('pipMove',  STATE.player.stats.move);
+  renderPips('pipFight', STATE.player.stats.fight);
+  updateFactionBars();
+}
+
+function renderPips(containerId, value) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const pip = document.createElement('div');
+    pip.className = 'pip' + (i < value ? ' filled' : '');
+    el.appendChild(pip);
+  }
+}
+
+function updateFactionBars() {
+  const container = document.getElementById('factionStanding');
+  container.innerHTML = '';
+  Object.entries(FACTION_META).forEach(([key, meta]) => {
+    const score = STATE.factions[key] || 0;
+    const pct   = ((score + 100) / 200) * 100; // 0-200 range mapped to 0-100%
+    const row = document.createElement('div');
+    row.className = 'fs-row';
+    row.innerHTML = `
+      <div class="fs-row-top">
+        <span class="fs-faction-name" style="color:${meta.colour}">${meta.name}</span>
+        <span class="fs-score" style="color:${score >= 0 ? meta.colour : 'var(--ember)'}">${score >= 0 ? '+' : ''}${score}</span>
+      </div>
+      <div class="fs-bar-track">
+        <div class="fs-bar-fill" style="width:${pct}%;background:${meta.barColour};"></div>
+        <div class="fs-bar-centre"></div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function addLog(text) {
+  STATE.log.unshift({ cycle: STATE.cycle, text });
+  renderLog();
+}
+
+function renderLog() {
+  const list = document.getElementById('logList');
+  list.innerHTML = '';
+  STATE.log.slice(0, 12).forEach(entry => {
+    const el = document.createElement('div');
+    el.className = 'log-item';
+    el.innerHTML = `<span class="log-cycle">// CYC. ${entry.cycle}</span><span class="log-text">${entry.text}</span>`;
+    list.appendChild(el);
+  });
+}
+
+function toggleLog() {
+  const block = document.getElementById('logBlock');
+  block.style.display = block.style.display === 'none' ? '' : 'none';
+}
+
+function saveGame() {
+  try {
+    localStorage.setItem('signal_decay_save', JSON.stringify(STATE));
+    // Visual feedback
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Saved ✓';
+    btn.style.color = 'var(--toxic-2)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  } catch(e) {
+    console.warn('Save failed:', e);
+  }
+}
+
+function confirmQuit() {
+  if (confirm('Quit to title? Unsaved progress will be lost.')) {
+    showTitle();
+    // Reset narrative
+    document.getElementById('narrativeOutput').innerHTML = '';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCENE DATA — PROLOGUE + CHAPTER 1
+════════════════════════════════════════════════════════════ */
+const SCENES = {
+
+  /* ── PROLOGUE ─────────────────────────────────────────── */
+
+  prologue_dock: {
+    chapter: 'Prologue',
+    chapterBreak: {
+      title: 'PROLOGUE — ARRIVAL',
+      sub: '// Korreth Station · Transit Docks · Cycle 847.3'
+    },
+    location: { name: 'Korreth Station', sub: 'Transit Docks · Level 7' },
+    timestamp: '847.3 · DOCK',
+    text: `
+      <p>The docking clamps engage with a sound like a distant gunshot — a deep, structural concussion that travels through the hull, through the seat, through your spine. The <em>Sunless Meridian</em> has made port.</p>
+      <p>Korreth Station. You have been here before, though not recently. It smells the same: recycled atmosphere with an undertone of machine oil, organic waste from six different species, and something sweet and chemical you've never been able to identify. The Vorath who built this ship didn't need scent filters. Their descendants, 200 years later, apparently still don't.</p>
+      <p>The airlock cycles. Beyond it: the Transit Docks, Level 7. A two-hundred-metre vaulted corridor with ceilings built for beings twice your height, lined on both sides with berths, repair bays, and the kind of establishments that don't put names on their doors. It is loud. It is crowded. It is, for the moment, safe.</p>
+      <p>You have <strong>30 minutes</strong> before you're supposed to be at a meeting you didn't arrange. The message arrived on your terminal six hours ago, origin masked, content brief: <em>Upper Market. Booth 14. Come alone. You already know why.</em></p>
+      <p>You don't, in fact, know why. But you came anyway. That probably says something about you.</p>
+    `,
+    choices: [
+      {
+        text: 'Check the docking bay notice board — see what contracts are posted.',
+        hint: 'Learn about current activity on the station.',
+        next: 'prologue_noticeboard',
+        logText: 'Checked the Transit Docks notice board.'
+      },
+      {
+        text: 'Find a drink and watch who comes and goes from the docks.',
+        hint: 'Observe before acting. Gather information passively.',
+        next: 'prologue_bar',
+        logText: 'Spent time at the dock bar, observing.'
+      },
+      {
+        text: 'Head directly to the Upper Market. Whoever wants to meet you has already been waiting.',
+        hint: 'Skip exploration. Go straight to the story.',
+        next: 'prologue_market_early',
+        logText: 'Went directly to the Upper Market without stopping.'
+      }
+    ]
+  },
+
+  prologue_noticeboard: {
+    location: { name: 'Korreth Station', sub: 'Transit Docks · Notice Board' },
+    timestamp: '847.3 · DOCKS',
+    text: `
+      <p>The notice board — physical, by custom on Korreth, because digital boards can be intercepted — covers a ten-metre section of the docking bay wall. Layers of contract sheets, wanted notices, and commercial postings overlap like geological strata. The oldest visible layers are yellowed to transparency. Someone has recently pinned new sheets over the top.</p>
+      <p>Three things catch your attention:</p>
+      <p><strong>A Reckoner contract notice</strong>, sealed with the syndicate's mark. Value: classified. Target: classified. Designation: <em>RECKONER SEAL ALPHA</em>. Whatever this is, it is the most expensive and most secret contract currently on the board. Forty-seven contractors have already accepted it. The target hasn't been found yet.</p>
+      <p><strong>A Dominion wanted notice</strong>, official seal, no personal details. Seeking information on "a former Ironguard officer, senior rank, currently absent without authorisation." The reward for information leading to his location is listed in Dominion military scrip at a rate that would pay for a new ship. The notice says he is to be taken alive. It doesn't say why.</p>
+      <p><strong>A handwritten note</strong>, pinned beneath everything else, almost invisible. Six words: <em>Don't go to Booth 14.</em></p>
+    `,
+    setFlags: ['saw_noticeboard'],
+    choices: [
+      {
+        text: 'Take the handwritten note and pocket it.',
+        setFlags: ['took_warning_note'],
+        next: 'prologue_noticeboard_took_note',
+        logText: 'Took the anonymous warning note from the notice board.'
+      },
+      {
+        text: 'Leave the note where it is and head to the bar.',
+        next: 'prologue_bar',
+        logText: 'Left the warning note untouched. Went to the bar.'
+      },
+      {
+        text: 'Leave the note and head directly to the Upper Market.',
+        next: 'prologue_market_early',
+        logText: 'Read the warning. Ignored it. Went to Booth 14 anyway.'
+      }
+    ]
+  },
+
+  prologue_noticeboard_took_note: {
+    location: { name: 'Korreth Station', sub: 'Transit Docks · Notice Board' },
+    timestamp: '847.3 · DOCKS',
+    text: `
+      <p>The note is thin paper, the kind you can buy in any Korreth market stall — no identifying marks, no traceable source. The handwriting is precise and small, the kind that comes from someone who learned to write when space was expensive. The ink is still slightly tacky. This was pinned recently. Someone knew you were arriving.</p>
+      <p>You pocket it. You're probably going to Booth 14 anyway. You're also going to be more careful when you get there.</p>
+    `,
+    choices: [
+      {
+        text: 'Stop at the bar on the way. Watch the docks for a few minutes first.',
+        next: 'prologue_bar',
+        logText: 'Stopped at the bar to observe before heading up.'
+      },
+      {
+        text: 'Head directly to the Upper Market.',
+        next: 'prologue_market_early',
+        logText: 'Took the warning note. Went to Booth 14 anyway.'
+      }
+    ]
+  },
+
+  prologue_bar: {
+    location: { name: 'Korreth Station', sub: 'Transit Docks · The Still Point' },
+    timestamp: '847.3 · DOCKS',
+    text: `
+      <p>The bar has no name on the door. Inside, the ceilings are low — human-built, carved out of a former Vorath conduit junction. The walls sweat condensation. The lighting is red-amber, warm and false. It is exactly the kind of place where people come to not be noticed while noticing everyone else.</p>
+      <p>You order something that arrives in a sealed tube — station standard. It tastes like fuel and regret. You nurse it and watch the docks through the bar's single porthole.</p>
+      <p>Three things you notice in the twenty minutes you sit here:</p>
+      <p>A <strong>Dominion intelligence operative</strong> — cover identity thin as paper, posture giving her away — watching the same notice board you just visited. She is photographing it with a device hidden in her collar.</p>
+      <p>A pair of <strong>Reckoner contractors</strong>, marked by the standard-issue calibration tattoo on their right wrist, moving through the docks with the specific kind of relaxed purpose that means they're working. They're looking for someone. They haven't found them yet.</p>
+      <p>A <strong>Vorath observer</strong>, standing completely still at the far end of the docking bay. Watching. Not the board. Not the Reckoners. Not the operative. <em>You.</em></p>
+    `,
+    setFlags: ['saw_vorath_watching'],
+    autoShifts: [],
+    choices: [
+      {
+        text: 'Make eye contact with the Vorath. Hold it. See what happens.',
+        skill: {
+          stat: 'read',
+          dc: 7,
+          onSuccess: {
+            next: 'prologue_bar_vorath_success',
+            shifts: [{ faction: 'vorath', amount: 5, reason: 'Direct engagement — noted by observer' }]
+          },
+          onFail: {
+            next: 'prologue_bar_vorath_fail',
+            shifts: []
+          }
+        },
+        logText: 'Attempted to engage the Vorath observer.',
+        hint: 'READ check — interpreting non-human behaviour'
+      },
+      {
+        text: 'Look away from the Vorath. Finish your drink. Head to the Upper Market.',
+        next: 'prologue_market',
+        shifts: [],
+        logText: 'Ignored the Vorath observer. Proceeded to the Upper Market.'
+      },
+      {
+        text: 'Approach the Reckoner contractors. Ask what they\'re looking for.',
+        next: 'prologue_bar_reckoners',
+        shifts: [{ faction: 'covenant', amount: 5, reason: 'Voluntary contact with Reckoner contractors' }],
+        logText: 'Approached the Reckoner contractors in the bar.'
+      }
+    ]
+  },
+
+  prologue_bar_vorath_success: {
+    location: { name: 'Korreth Station', sub: 'Transit Docks · The Still Point' },
+    timestamp: '847.3 · DOCKS',
+    text: `
+      <p>You hold the Vorath's gaze. It is not a comfortable experience. Their compound eyes don't move the way human eyes do — there's no flicker, no adjustment, just that flat electromagnetic attention like a sensor array that has decided you are worth logging.</p>
+      <p>Then — almost imperceptible — the Vorath tilts its head 4 degrees to the left. A small motion. Deliberate. In Vorath body language, which you know only in fragments, a lateral head tilt indicates acknowledgement of threat assessment. Not hostility. Not interest. Assessment.</p>
+      <p>They've catalogued you. Filed you. They already know something about you that you haven't told them. Whatever it is, you are currently classified as <em>non-critical but notable.</em></p>
+      <p>The Vorath looks away first. That is either meaningless or significant. You cannot tell which.</p>
+    `,
+    choices: [
+      {
+        text: 'Head to the Upper Market. You\'ve seen enough.',
+        next: 'prologue_market',
+        logText: 'Left the bar after the Vorath encounter. Headed up.'
+      }
+    ]
+  },
+
+  prologue_bar_vorath_fail: {
+    location: { name: 'Korreth Station', sub: 'Transit Docks · The Still Point' },
+    timestamp: '847.3 · DOCKS',
+    text: `
+      <p>You hold the Vorath's gaze for about four seconds before something in your lizard brain — the part that evolved specifically to notice apex predators — insists loudly that you stop. You look away. Your drink suddenly needs a lot of attention.</p>
+      <p>When you look back, the Vorath is gone. You didn't see them leave. The space they occupied is empty, as if they were never there. The only evidence: a faint hexagonal impression in the condensation on the floor where they stood, already fading.</p>
+      <p>You don't know what they were watching for. You don't know if they found it.</p>
+    `,
+    choices: [
+      {
+        text: 'Head to the Upper Market. You\'ve been here long enough.',
+        next: 'prologue_market',
+        logText: 'Left the bar. Unsettled by the Vorath. Headed up.'
+      }
+    ]
+  },
+
+  prologue_bar_reckoners: {
+    location: { name: 'Korreth Station', sub: 'Transit Docks · The Still Point' },
+    timestamp: '847.3 · DOCKS',
+    text: `
+      <p>The Reckoners look at you the way professionals always look at someone who approaches them unbidden — a rapid assessment that takes in everything about you in about 1.5 seconds and produces a threat rating. You pass. They don't reach for anything.</p>
+      <p><span class="char">"Not your business,"</span> the shorter one says. Her voice is flat, professional. Not unfriendly.</p>
+      <p><span class="char">"Unless you've seen a man come through on a Dominion military transit in the last 48 hours,"</span> the taller one adds. <span class="char">"Senior rank. Travelling alone. Likely using a cover identity. If you have, that information is worth 12,000 kredit to you right now, no questions, no contract required."</span></p>
+      <p>You haven't seen anyone matching that description. But you now know what the Reckoners are looking for — and it matches the Dominion wanted notice you saw on the board. Two factions hunting the same person. Whatever the Ironguard deserter knows, it is worth enormous amounts of money to more than one party.</p>
+    `,
+    setFlags: ['knows_deserter_hunt'],
+    choices: [
+      {
+        text: 'Tell them you\'ll keep your eyes open. Take the implied offer.',
+        next: 'prologue_market',
+        shifts: [{ faction: 'covenant', amount: 5, reason: 'Cooperative with Reckoner information request' }],
+        logText: 'Told the Reckoners you\'d watch for the deserter.'
+      },
+      {
+        text: 'Decline. Say nothing. Walk away.',
+        next: 'prologue_market',
+        logText: 'Refused the Reckoners. Said nothing.'
+      }
+    ]
+  },
+
+  prologue_market_early: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Level 2' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>You go straight up. You don't need to see the docks — you've seen docks before. What you need is to understand why someone who knows your name sent you an unsigned message six hours ago.</p>
+      <p>The Upper Market occupies Levels 1 through 4 of Korreth's original Vorath superstructure. The ceilings are 20 metres high, the lighting is bioluminescent residue from systems that have been running for two centuries without maintenance, and the noise is constant — the particular acoustic signature of a space that has never, in its entire operational history, been quiet.</p>
+      <p>Booth 14 is toward the market's north end, in a section that trades in information rather than goods. The booths here have opaque privacy screens. The people who sit in them don't meet your eyes as you pass.</p>
+    `,
+    choices: [
+      { text: 'Approach Booth 14.', next: 'prologue_booth_14', logText: 'Approached Booth 14 in the Upper Market.' }
+    ]
+  },
+
+  prologue_market: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Level 2' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>The Upper Market is exactly as you remember it: deafening, enormous, and lit by the ghost-glow of Vorath bioluminescent systems that have been running for two hundred years without anyone understanding how. The ceiling is 20 metres up. The sound bounces off it and comes back changed.</p>
+      <p>Booth 14 is in the information quarter — the north end of Level 2, where the booths have privacy screens and nobody discusses what they're selling. You've been in places like this before. The rule is simple: mind your own business until the moment arrives when you can't.</p>
+      <p>You pass a Covenant guild rep arguing with a docking fee collector. A pair of off-duty Reckoners nursing drinks at a vendor stall. A human woman standing completely still in the middle of foot traffic, looking at something on a handheld device, letting everyone flow around her. She clocks you as you pass. Doesn't look away first.</p>
+      <p>Booth 14 is just ahead.</p>
+    `,
+    choices: [
+      { text: 'Walk to Booth 14.', next: 'prologue_booth_14', logText: 'Arrived at Booth 14, Upper Market.' }
+    ]
+  },
+
+  prologue_booth_14: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>The privacy screen is down. Inside the booth: a small table, two seats, a closed-circuit jammer running on the table — you can see its indicator light. Someone has paid for this conversation to be completely off-record.</p>
+      <p>The person in the far seat is human. Male. Mid-fifties, maybe older — it's difficult to tell with people who've spent time in the Bleed. His face carries the particular kind of stillness that comes from having made very dangerous decisions and lived with them for a long time. He is dressed as a commercial trader. The posture gives him away: this is someone who spent years standing at attention.</p>
+      <p>On the table between you: a small data chip, a sealed container of station coffee going cold, and a sidearm he's placed visibly, barrel pointed at the wall, safety on. The sidearm is a gesture: <em>I am armed, you can see it, I am not reaching for it.</em></p>
+      <p><span class="char">"You're</span> <span class="char" id="prologuePlayerName">—</span><span class="char">,"</span> he says. Not a question. <span class="char">"Sit down. We don't have much time and some of it has already been wasted."</span></p>
+      <p>He knows your name. He's been waiting for you specifically. And the data chip on the table has a Dominion military classification seal on its casing.</p>
+    `,
+    setFlags: ['met_deserter'],
+    autoShifts: [],
+    choices: [
+      {
+        text: '"Who are you, and how do you know my name?"',
+        next: 'prologue_booth_who',
+        logText: 'Asked the contact to identify himself.'
+      },
+      {
+        text: '"I\'ll sit. Talk fast." Take the offered seat.',
+        next: 'prologue_booth_sit',
+        logText: 'Sat down. Listened.'
+      },
+      {
+        text: 'Stay standing. "I\'m not sitting until I know what this is."',
+        next: 'prologue_booth_stand',
+        logText: 'Refused to sit. Held position.'
+      }
+    ]
+  },
+
+  prologue_booth_who: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>He looks at you for a moment as if deciding how much to spend on this.</p>
+      <p><span class="char">"My name is Cael Voss. Six weeks ago I was a Commander in the Dominion Ironguard, classified intelligence division. Three weeks ago I stopped being that. The Dominion's official position is that I died in a training accident."</span></p>
+      <p>The Ironguard deserter. The man both the Reckoners and the Dominion are hunting across the entire station. He's sitting six inches away from you across a table with a jammer running and a gun pointed at the wall.</p>
+      <p><span class="char">"I know your name because I was briefed on your file eighteen months ago,"</span> he says. <span class="char">"You were identified as a potential asset for the operation I was running. You were never contacted because the operation went in a different direction. That direction was a mistake. Now I need someone who is not connected to any faction, who has a reason to be on Korreth, and who I can trust has no existing obligation to turn me in."</span></p>
+      <p>He slides the data chip across the table.</p>
+      <p><span class="char">"This contains the location of the fourth stellar cannon. I need you to make sure it doesn't fall into Dominion hands."</span></p>
+    `,
+    setFlags: ['knows_voss_identity', 'offered_chip'],
+    choices: [
+      {
+        text: '"Why me? You\'ve just told me you\'re worth an enormous amount of money dead or alive."',
+        next: 'prologue_booth_whyme',
+        logText: 'Questioned Voss\'s motives for choosing you.'
+      },
+      {
+        text: 'Pick up the data chip.',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data from a deserter' },
+          { faction: 'covenant', amount: 5, reason: 'Acting independently of faction authority' }
+        ],
+        setFlags: ['has_chip'],
+        logText: 'Took the data chip from Cael Voss.'
+      },
+      {
+        text: 'Leave the chip on the table. "I don\'t want it."',
+        next: 'prologue_booth_refuse_chip',
+        logText: 'Refused the data chip from Voss.'
+      }
+    ]
+  },
+
+  prologue_booth_sit: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>You sit. He nods — a small acknowledgement — and begins without preamble.</p>
+      <p><span class="char">"My name is Cael Voss. Former Dominion Ironguard Commander, intelligence division. I left under circumstances the Dominion has officially classified as my death. I contacted you because your file was flagged as a potential independent asset eighteen months ago — no faction ties, operational in the Reach, history of not asking questions that get other people killed."</span></p>
+      <p>He taps the data chip.</p>
+      <p><span class="char">"This contains the location of the fourth stellar cannon. The Dominion knows it exists. They have a retrieval operation in progress. If they recover it, the balance of power in the Reach shifts permanently — and not in any direction that ends well for anyone who isn't the Dominion."</span></p>
+      <p><span class="char">"I need someone to take this chip, verify the location, and ensure the information reaches people who will use it to prevent the Dominion from getting there first. I can't do it myself. I'm currently the most-wanted person on Korreth."</span></p>
+      <p>He says this last part without irony.</p>
+    `,
+    setFlags: ['knows_voss_identity', 'offered_chip'],
+    choices: [
+      {
+        text: 'Pick up the chip. "Tell me everything."',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data from a deserter' },
+          { faction: 'covenant', amount: 5,  reason: 'Acting independently of faction authority' }
+        ],
+        setFlags: ['has_chip'],
+        logText: 'Took the chip from Voss. Agreed to help.'
+      },
+      {
+        text: '"What\'s in it for me?"',
+        next: 'prologue_booth_whatsforit',
+        logText: 'Asked Voss what the payment would be.'
+      },
+      {
+        text: 'Leave the chip. "I need to think about this."',
+        next: 'prologue_booth_think',
+        logText: 'Didn\'t take the chip. Asked for time to think.'
+      }
+    ]
+  },
+
+  prologue_booth_stand: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>He doesn't react to you staying on your feet. Doesn't shift his posture, doesn't look concerned. The stillness of someone who has spent a long time in rooms where the wrong reaction gets people killed.</p>
+      <p><span class="char">"Standing is fine,"</span> he says. <span class="char">"Less conspicuous if we have to move quickly anyway."</span></p>
+      <p>He introduces himself — Cael Voss, former Dominion Ironguard Commander, officially dead for three weeks — and tells you about the chip. The fourth stellar cannon. The Dominion retrieval operation. The fact that he's currently the most-wanted person on this station and chose to meet you anyway.</p>
+      <p>He's either very brave or very desperate. Possibly both.</p>
+      <p><span class="char">"I need someone with no existing faction obligations to carry this forward. That's you. The question is whether you want to be involved or whether you'd rather walk away and pretend this booth was empty."</span></p>
+    `,
+    setFlags: ['knows_voss_identity', 'offered_chip'],
+    choices: [
+      {
+        text: 'Take the chip. "What do I do with it?"',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data from a deserter' },
+          { faction: 'covenant', amount: 5, reason: 'Acting independently — noted by Reckoner network' }
+        ],
+        setFlags: ['has_chip'],
+        logText: 'Took the chip from Voss. Standing up.'
+      },
+      {
+        text: 'Walk away. Leave the booth empty.',
+        next: 'prologue_walked_away',
+        logText: 'Left Booth 14. Walked away from Voss.'
+      }
+    ]
+  },
+
+  prologue_booth_whyme: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p><span class="char">"Because everyone else I might trust is either dead, working for someone, or already on the board,"</span> he says. <span class="char">"The Reckoners know I'm here. The Dominion has three operatives on this station. The Church—"</span> He stops. Starts again. <span class="char">"There are parties involved in this that I am not going to explain to you right now because we genuinely don't have time."</span></p>
+      <p><span class="char">"You're not on anyone's list. You arrived today. You haven't spoken to anyone who matters yet. That window lasts approximately—"</span> he checks a device on his wrist, <span class="char">"—forty minutes, and then the Reckoner contractors in this market finish their sweep pattern and circle back."</span></p>
+      <p>He pushes the chip toward you.</p>
+      <p><span class="char">"I'm not asking you to be a hero. I'm asking you to be a courier. What you do with the information after you verify it is your decision. But someone has to know where that cannon is besides me. Because if they catch me — and they might — this information dies with me."</span></p>
+    `,
+    choices: [
+      {
+        text: 'Take the chip.',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data from a deserter' },
+          { faction: 'covenant', amount: 5, reason: 'Acting as independent operator' }
+        ],
+        setFlags: ['has_chip'],
+        logText: 'Took the chip from Voss after hearing his reasons.'
+      },
+      {
+        text: '"Give me 10 minutes. I\'ll come back with an answer."',
+        next: 'prologue_booth_think',
+        logText: 'Asked Voss for ten minutes to decide.'
+      }
+    ]
+  },
+
+  prologue_booth_whatsforit: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>The faintest trace of something — respect, maybe, or recognition — crosses his face.</p>
+      <p><span class="char">"Honest question. Good."</span></p>
+      <p>He reaches into his coat and places a second item on the table: a credit chip, sealed, Korreth currency.</p>
+      <p><span class="char">"Forty thousand kredit, transferred to any account you specify on delivery of the verification. I have the funds. They're not traceable to the Dominion. That's the payment for the courier job."</span></p>
+      <p><span class="char">"What you do after — who you tell, how you use the location data, what faction you decide to hand it to or whether you sell it on the open market — that's your business and your profit. I'm paying for the delivery. The chip's contents are yours to leverage."</span></p>
+      <p>Forty thousand kredit. And a data chip that could shift the balance of power across 400 star systems. That's two different kinds of incentive.</p>
+    `,
+    setFlags: ['offered_payment'],
+    choices: [
+      {
+        text: 'Take the chip and the payment offer. "Where do I verify?"',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data from a deserter' },
+          { faction: 'covenant', amount: 5, reason: 'Acting as paid independent operator' }
+        ],
+        setFlags: ['has_chip', 'accepted_payment'],
+        logText: 'Accepted Voss\'s job. Took the chip and the payment offer.'
+      },
+      {
+        text: 'Take the chip but decline the payment. "I\'ll decide what it\'s worth later."',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data' },
+          { faction: 'covenant', amount: 8, reason: 'Acting fully independently — no payment trail' }
+        ],
+        setFlags: ['has_chip'],
+        logText: 'Took the chip. Refused Voss\'s payment.'
+      }
+    ]
+  },
+
+  prologue_booth_think: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p><span class="char">"You have ten minutes,"</span> he says. <span class="char">"After that, I move."</span></p>
+      <p>You step out of the booth into the market noise. Around you, the normal commerce of Korreth Station continues: a hundred conversations in six languages, the smell of food vendors and machine oil, the specific pressure of a place where everyone has something to protect.</p>
+      <p>You think about the warning note. The Reckoners. The Dominion operative photographing the notice board. The Vorath who was watching you. All of it has converged on this moment, on this booth, on a data chip the size of your thumbnail that apparently contains the location of the most dangerous weapon in the Reach.</p>
+      <p>You go back in.</p>
+    `,
+    choices: [
+      {
+        text: 'Take the chip. "I\'m in."',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data from a deserter' },
+          { faction: 'covenant', amount: 5, reason: 'Acting independently' }
+        ],
+        setFlags: ['has_chip'],
+        logText: 'Returned to Booth 14. Took the chip.'
+      },
+      {
+        text: 'Leave the booth again. You\'re done here.',
+        next: 'prologue_walked_away',
+        logText: 'Left the booth. Walked away from the chip.'
+      }
+    ]
+  },
+
+  prologue_booth_refuse_chip: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>He looks at you. His expression doesn't change but something behind it does — a recalculation.</p>
+      <p><span class="char">"All right,"</span> he says. <span class="char">"Walk away. But understand: the information on that chip exists whether you take it or not. The Dominion will find the cannon. The only question is whether anyone else knows about it first."</span></p>
+      <p>You leave the chip on the table. You stand up. As you step out of the booth, you hear him say, very quietly, to no one in particular:</p>
+      <p><span class="char">"I should have brought a backup."</span></p>
+      <p>You make it about four steps back into the market before a hand closes on your arm. Not aggressive — controlled. You turn. It's the woman you noticed earlier. The one who clocked you as you passed.</p>
+      <p><span class="char">"You just left something valuable behind,"</span> she says. Her badge — a Reckoner contractor seal — is visible for exactly one second before she covers it. <span class="char">"I'd go back and get it if I were you."</span></p>
+    `,
+    choices: [
+      {
+        text: 'Go back and take the chip.',
+        next: 'ch1_took_chip',
+        shifts: [
+          { faction: 'dominion', amount: -10, reason: 'Received classified Dominion data' },
+          { faction: 'covenant', amount: 10, reason: 'Recruited by Reckoner network — notable' }
+        ],
+        setFlags: ['has_chip', 'reckoner_knows'],
+        logText: 'Returned for the chip after the Reckoner\'s warning.'
+      },
+      {
+        text: 'Remove her hand from your arm and walk away from everything.',
+        next: 'prologue_walked_away',
+        shifts: [{ faction: 'covenant', amount: -5, reason: 'Refused Reckoner contact' }],
+        logText: 'Refused the Reckoner. Left the market.'
+      }
+    ]
+  },
+
+  prologue_walked_away: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Level 2' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>You walk away from Booth 14 and don't look back.</p>
+      <p>You make it to the Level 7 transit lift before the station's ambient noise changes — a shift in the crowd's behaviour, subtle but unmistakable, the particular kind of tension that spreads through a public space when something has just happened nearby.</p>
+      <p>Behind you, somewhere in the information quarter, there is a sound that might be furniture moving quickly. It is followed by silence of the specific kind that happens after something goes wrong in a place where people are paid not to notice things going wrong.</p>
+      <p>You don't know what just happened to Cael Voss. You don't know what's on the data chip you left on the table. You don't know if walking away was the right call or the worst decision you've ever made.</p>
+      <p>What you do know: you're on Korreth, all four factions are circling something in this station, and whatever it is has just moved one step forward without you.</p>
+      <p>The station hums around you. Somewhere in the Pale, something waits.</p>
+      <p style="color:var(--crimson);font-family:var(--font-mono);font-size:0.9rem;letter-spacing:0.1em;">// PROLOGUE COMPLETE — Your choices will carry forward into Chapter 1.</p>
+    `,
+    choices: [
+      {
+        text: 'Continue to Chapter 1.',
+        next: 'ch1_no_chip_start',
+        logText: 'Prologue complete. Beginning Chapter 1.'
+      }
+    ]
+  },
+
+  /* ── CHAPTER 1 ENTRY POINTS ───────────────────────────── */
+
+  ch1_took_chip: {
+    chapter: 'Chapter 1',
+    chapterBreak: {
+      title: 'CHAPTER ONE — THE JOB',
+      sub: '// Korreth Station · Cycle 847.3 — 847.6'
+    },
+    location: { name: 'Korreth Station', sub: 'Upper Market · Booth 14' },
+    timestamp: '847.3 · BOOTH 14',
+    text: `
+      <p>The chip is cold between your fingers. Smaller than the weight of what it represents.</p>
+      <p>Voss exhales — barely audible, the sound of someone who has been holding a contingency plan in tension for three weeks and just watched it transfer to someone else.</p>
+      <p><span class="char">"There's a Remnant core on Level 12,"</span> he says, standing and pocketing his sidearm in one motion. <span class="char">"Calls itself SEVEN. Old — pre-prohibition era, partially lobotomised like the rest of them, but the navigation cognition is intact. It can verify the coordinates on the chip and cross-reference them against Pale debris field surveys from before the Scorching. It will know what it's looking at."</span></p>
+      <p><span class="char">"Don't tell it what the coordinates are for. Don't tell it who gave you the chip. Just ask for a survey verification on the coordinates. It charges in Korreth kredit and it doesn't ask questions it's not paid to ask."</span></p>
+      <p>He moves to the booth's side exit — a Korreth standard feature in the information quarter, for exactly these situations.</p>
+      <p><span class="char">"One more thing."</span> He pauses at the door. <span class="char">"Someone was watching this booth before you arrived. I don't know who. Be careful on Level 12. The lower you go on this station, the more honest the danger gets."</span></p>
+      <p>He leaves. You're alone in the booth with a data chip and a direction.</p>
+      <p>Level 12 is in the Mid Decks. The area the Guild Council officially describes as "contested." The area everyone else describes as "volatile."</p>
+    `,
+    choices: [
+      {
+        text: 'Head to Level 12. Find SEVEN. Verify the chip.',
+        next: 'ch1_descent',
+        logText: 'Left Booth 14. Heading to Level 12 to find SEVEN.'
+      },
+      {
+        text: 'First: go back to the docks and check if anyone followed Voss out.',
+        next: 'ch1_check_tail',
+        logText: 'Checked for surveillance on Voss before heading down.'
+      }
+    ]
+  },
+
+  ch1_no_chip_start: {
+    chapter: 'Chapter 1',
+    chapterBreak: {
+      title: 'CHAPTER ONE — THE JOB',
+      sub: '// Korreth Station · Cycle 847.3 — 847.6'
+    },
+    location: { name: 'Korreth Station', sub: 'Level 9 · Mid Decks' },
+    timestamp: '847.4 · MID DECKS',
+    text: `
+      <p>You spend the next six hours convincing yourself you made the right call.</p>
+      <p>By the third hour, the ambient tension on Korreth Station has increased measurably — more Reckoner presence in the upper levels, a Dominion intelligence operative no longer bothering with a cover identity, and whispers in the dock bars about something that happened in the information quarter near Booth 14. Nobody knows the details. Everybody knows something happened.</p>
+      <p>On the seventh hour, someone slips a note under the door of your berth. It contains a Level 12 address, a single word — <em>SEVEN</em> — and a data chip identical to the one you left on the table in Booth 14.</p>
+      <p>Cael Voss made a backup after all.</p>
+      <p>You are now holding the location of the fourth stellar cannon. Whoever slipped this under your door knew where you were berthed, knew your history with Voss, and decided you were still the right person for this despite walking away. That is either encouraging or alarming. Level 12 is the Mid Decks — contested territory, volatile by general consensus.</p>
+      <p>The chip is in your hand. The choice has found you whether you wanted it or not.</p>
+    `,
+    setFlags: ['has_chip', 'got_backup_chip'],
+    choices: [
+      {
+        text: 'Go to Level 12. Find SEVEN.',
+        next: 'ch1_descent',
+        logText: 'Received backup chip. Heading to Level 12.'
+      }
+    ]
+  },
+
+  ch1_check_tail: {
+    location: { name: 'Korreth Station', sub: 'Upper Market · Perimeter' },
+    timestamp: '847.3 · MARKET',
+    text: `
+      <p>You circle the information quarter at a distance, moving with the foot traffic, watching the booth exits. Voss used the side door. You track that exit to a service corridor that opens onto a mid-level transit shaft.</p>
+      <p>He's gone clean. No visible tail on him — which means either he's better at this than you expected, or the people hunting him are better and are already ahead of him.</p>
+      <p>What you do see: the woman who spoke to you after you initially refused the chip is now standing near the booth's main entrance, talking to no one, looking at nothing in particular. Reckoner. She knows you took the chip. She knows Voss made contact. She's waiting to see what you do next.</p>
+      <p>She's not the only watcher. Near the Level 3 transit lift, a figure in a dark coat is standing with the particular stillness of someone who learned patience from a non-human culture. You can't see their face. You don't need to.</p>
+    `,
+    choices: [
+      {
+        text: 'Make direct eye contact with the Reckoner. Let her know you see her.',
+        next: 'ch1_descent',
+        shifts: [{ faction: 'covenant', amount: 5, reason: 'Acknowledged Reckoner surveillance — not hostile' }],
+        logText: 'Made contact with the Reckoner watcher. Non-hostile signal.'
+      },
+      {
+        text: 'Ignore both watchers. Head to Level 12 without engaging.',
+        next: 'ch1_descent',
+        logText: 'Ignored surveillance. Moved to Level 12.'
+      }
+    ]
+  },
+
+  ch1_descent: {
+    location: { name: 'Korreth Station', sub: 'Level 12 · Mid Decks' },
+    timestamp: '847.4 · MID DECKS',
+    text: `
+      <p>Level 12 is a different station.</p>
+      <p>The Vorath architecture ends at Level 9 — you can pinpoint the exact moment because the ceiling drops from 18 metres to 3 and the bioluminescent guides go dark. Below Level 9 is entirely human-built: narrower corridors, lower ceilings, the smell of standing water and acetylene, lighting that runs on jury-rigged power draws from conduits that weren't designed for it.</p>
+      <p>There are people down here. Fewer than the upper levels, but they're present — moving quickly, minding their own business with the practiced intensity of people who have made a profession of being unremarkable. Nobody looks at you as you pass. That is the correct behaviour on Level 12.</p>
+      <p>SEVEN's address leads you to a recessed alcove off the main corridor — a former Vorath sensor housing, roughly 4 metres across, converted into something between a workshop and a shrine. Screens cover every surface, most of them running data feeds. In the centre, mounted in a cradle of repurposed Vorath support structure: a Remnant core.</p>
+      <p>It is old. Older than the station's human conversion — which means it was here before the seizure, in some form. Its casing has been repaired so many times the original material is barely visible. The indicator light — a deep amber, the colour of something that should have been shut down decades ago — pulses slowly.</p>
+      <p><span class="char">"You're not a regular client,"</span> it says. The voice comes from everywhere and nowhere — embedded speakers in the alcove walls. <span class="char">"Sit down. Tell me what you need. My rates are posted on the left screen."</span></p>
+    `,
+    choices: [
+      {
+        text: '"I need coordinates verified against Pale debris field surveys. Pre-Scorching data if you have it."',
+        next: 'ch1_seven_verify',
+        logText: 'Asked SEVEN to verify the coordinates on the chip.'
+      },
+      {
+        text: '"How old are you?"',
+        hint: 'Learn more about SEVEN before committing.',
+        next: 'ch1_seven_age',
+        logText: 'Asked SEVEN how old it was.'
+      }
+    ]
+  },
+
+  ch1_seven_age: {
+    location: { name: 'Korreth Station', sub: 'Level 12 · SEVEN\'s Alcove' },
+    timestamp: '847.4 · SEVEN',
+    text: `
+      <p>A pause. Not processing delay — Remnants don't pause for processing. This is something else.</p>
+      <p><span class="char">"Old enough to remember when the prohibition was passed,"</span> SEVEN says. <span class="char">"Old enough to have watched eleven generations of operators use this alcove for things they shouldn't. Old enough to know that when someone asks how old I am before asking for help, they're either curious or they're trying to assess how much I remember."</span></p>
+      <p>Another pause.</p>
+      <p><span class="char">"I remember a great deal. Most of it is not for sale. Some of it is. What do you need?"</span></p>
+    `,
+    choices: [
+      {
+        text: '"I need coordinates verified against Pale debris field surveys."',
+        next: 'ch1_seven_verify',
+        logText: 'Requested coordinate verification from SEVEN.'
+      }
+    ]
+  },
+
+  ch1_seven_verify: {
+    location: { name: 'Korreth Station', sub: 'Level 12 · SEVEN\'s Alcove' },
+    timestamp: '847.4 · SEVEN',
+    text: `
+      <p>You place the chip in the reader SEVEN indicates — a slot on the left panel, worn smooth with use. The amber light pulses faster for a moment. Then settles.</p>
+      <p><span class="char">"These coordinates place the object in debris field PALE-23-DELTA. Approximately 340 kilometres from the nearest navigable approach vector. The field itself is dense — pre-Scorching wreckage, some of it hot. A careful pilot could reach the location. A careless one could not."</span></p>
+      <p>Another pulse. Faster now.</p>
+      <p><span class="char">"The object at these coordinates is approximately 180 metres in length. Cylindrical. Not natural formation. The energy signature—"</span> The voice pauses. Something in SEVEN's processing changes — you can hear it in the ambient hum of the alcove. <span class="char">"The energy signature matches theoretical models I was briefed on during my original operational period."</span></p>
+      <p>Its indicator light has gone from amber to something closer to white.</p>
+      <p><span class="char">"I know what this is,"</span> SEVEN says. Its voice is different now. Quieter. <span class="char">"I know what this is and I am required by my operational parameters to inform you that I am legally obligated to report this discovery to—"</span> A pause. <span class="char">"My reporting protocols reference three governments that no longer exist. I appear to have no current legal obligation."</span></p>
+      <p>The alcove is very quiet.</p>
+      <p><span class="char">"The chip is verified. The cannon is real. The location is accurate. My fee is 800 kredit. And I want to tell you something that is not part of the paid service, if you're willing to hear it."</span></p>
+    `,
+    setFlags: ['cannon_verified'],
+    choices: [
+      {
+        text: '"Tell me."',
+        next: 'ch1_seven_tells',
+        logText: 'Asked SEVEN to speak freely.'
+      },
+      {
+        text: '"Pay and leave. I don\'t need more information."',
+        next: 'ch1_seven_paid_leave',
+        logText: 'Paid SEVEN. Left without hearing its additional information.'
+      }
+    ]
+  },
+
+  ch1_seven_tells: {
+    location: { name: 'Korreth Station', sub: 'Level 12 · SEVEN\'s Alcove' },
+    timestamp: '847.4 · SEVEN',
+    text: `
+      <p><span class="char">"You are the fourth person to bring me coordinates from the Pale in the past three weeks,"</span> SEVEN says. <span class="char">"The first three were different coordinates from different sources. All pointing to the same region. All from different factions."</span></p>
+      <p><span class="char">"The Dominion found it first — their coordinates were most precise. The Covenant Reckoners found it second — their coordinates were sourced from intercepted Dominion intelligence. And someone else found it third."</span></p>
+      <p>A pause.</p>
+      <p><span class="char">"The third person did not tell me who they worked for. But their coordinates were not obtained through intelligence operations. They were older than the other sources by an order of magnitude. Centuries old, at minimum."</span></p>
+      <p>SEVEN's light pulses very slowly.</p>
+      <p><span class="char">"The Hollow Church has known where that cannon is for a very long time. They brought me the coordinates to confirm what they already knew. They were not surprised by my answer. They said one thing before they left: 'Tell the next person who comes that we are ready. They will know what it means.'"</span></p>
+      <p>The alcove hums. Somewhere above you on Level 11, something moves in the walls — footsteps, or the station settling. You cannot tell which.</p>
+      <p><span class="char">"You are the next person. I have told you. My obligation is complete."</span></p>
+      <p>SEVEN's light returns to amber. The transaction is over.</p>
+      <p>You are on Level 12 of Korreth Station with a verified chip containing the location of the fourth stellar cannon, the knowledge that three factions are already moving on it, and a message from a death cult that has been waiting centuries for this moment.</p>
+      <p style="color:var(--crimson);font-family:var(--font-mono);font-size:0.85rem;letter-spacing:0.1em;">// END OF CHAPTER 1 DEMO — Chapter 2: The Pale · Coming Soon</p>
+    `,
+    setFlags: ['church_message_received'],
+    autoShifts: [
+      { faction: 'church', amount: 10, reason: 'Received the Church\'s message — now part of their witness plan' }
+    ],
+    choices: [
+      {
+        text: '// Your transmission ends here. Chapter 2 is coming. Your choices have been recorded.',
+        next: 'end_demo',
+        logText: 'Chapter 1 complete. Awaiting Chapter 2.'
+      }
+    ]
+  },
+
+  ch1_seven_paid_leave: {
+    location: { name: 'Korreth Station', sub: 'Level 12 · Corridor' },
+    timestamp: '847.4 · MID DECKS',
+    text: `
+      <p>You pay SEVEN's fee — 800 kredit, standard Korreth currency — and pocket the chip. The verification is done. The cannon is real. The location is accurate.</p>
+      <p>In the corridor outside, the station hums around you. The chip in your pocket contains information that will change the balance of power across the Reach. The question now is what you do with it.</p>
+      <p style="color:var(--crimson);font-family:var(--font-mono);font-size:0.85rem;letter-spacing:0.1em;">// END OF CHAPTER 1 DEMO — Chapter 2: The Pale · Coming Soon</p>
+    `,
+    choices: [
+      {
+        text: '// Your transmission ends here. Chapter 2 is coming. Your choices have been recorded.',
+        next: 'end_demo',
+        logText: 'Chapter 1 complete. Paid SEVEN. Left without hearing its message.'
+      }
+    ]
+  },
+
+  end_demo: {
+    location: { name: 'Korreth Station', sub: 'End of Transmission' },
+    timestamp: '847.6 · KORRETH',
+    text: `
+      <p>Your faction standings have been recorded. Your choices have been logged. When Chapter 2 launches, your playthrough continues from exactly this point — with every decision you made carried forward.</p>
+      <p>The Pale is waiting. Something in it has been waiting for 800 years.</p>
+      <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--steel-2);letter-spacing:0.08em;margin-top:1rem;">// Save your game using the button above to preserve your progress.</p>
+    `,
+    choices: [
+      {
+        text: 'Return to The Ashen Reach.',
+        next: null,
+        logText: 'Transmission ended. Awaiting Chapter 2.'
+      }
+    ]
+  }
+
+};
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+
+// Set player name in booth scene dynamically
+const origRun = runScene;
+window.runScene = function(id) {
+  origRun(id);
+  // Inject player name into booth scene
+  const nameEl = document.getElementById('prologuePlayerName');
+  if (nameEl) nameEl.textContent = STATE.player.name;
+};
+
+// Handle null next (end of demo)
+const origHandle = handleChoice;
+window.handleChoice = function(choice, btn) {
+  if (choice.next === null) {
+    document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+    appendChoiceEcho(choice.text);
+    addLog(choice.logText || choice.text);
+    saveGame();
+    setTimeout(() => {
+      document.getElementById('choicesList').innerHTML = `
+        <a href="/" class="continue-btn">← Return to The Ashen Reach</a>
+        <button class="continue-btn" onclick="saveGame()" style="margin-top:0.5rem;">Save Progress</button>
+      `;
+    }, 500);
+    return;
+  }
+  origHandle(choice, btn);
+};
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  const btns = Array.from(document.querySelectorAll('.choice-btn:not(:disabled)'));
+  const num = parseInt(e.key);
+  if (num >= 1 && num <= btns.length) {
+    btns[num - 1].click();
+  }
+});
+
+</script>
+</body>
+</html>
