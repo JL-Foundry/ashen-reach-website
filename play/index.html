@@ -10,14 +10,16 @@
   <link rel="stylesheet" href="../styles/signal-decay.css">
   <style>
     /* ══ GAME SHELL ══════════════════════════════════════════ */
-    html, body { overflow: hidden; height: 100%; margin: 0; padding: 0; }
+    html { overflow: hidden; height: 100%; }
+    body { overflow: hidden; height: 100%; margin: 0; padding: 0; }
+
+    :root { --choice-h: 220px; }
 
     .game-shell {
+      position: fixed;
+      inset: 0;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      max-height: 100vh;
-      overflow: hidden;
     }
 
     /* ══ GAME NAV ════════════════════════════════════════════ */
@@ -613,6 +615,7 @@
 
     /* ══ MOBILE ══════════════════════════════════════════════ */
     @media (max-width: 768px) {
+      :root { --choice-h: 260px; }
       .game-viewport { grid-template-columns: 1fr; }
       .side-panel { display: none; }
       .location-meta { display: none; }
