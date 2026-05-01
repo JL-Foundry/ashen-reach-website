@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products — Coming Soon | The Ashen Reach</title>
+  <meta name="description" content="Apparel, print, and merchandise from The Ashen Reach universe. Coming soon.">
+  <link rel="canonical" href="https://theashenreach.com/products">
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://theashenreach.com/products">
+  <meta property="og:title"       content="Products — Coming Soon | The Ashen Reach">
+  <meta property="og:description" content="Apparel, print, and merchandise from The Ashen Reach universe. Coming soon.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><circle cx='16' cy='16' r='12' fill='none' stroke='%238b0000' stroke-width='1.5'/><circle cx='16' cy='16' r='4' fill='%23cc1a1a'/></svg>">
+  <link rel="stylesheet" href="../styles/signal-decay.css">
+
+  <style>
+    /* ── PAGE LAYOUT ── */
+    .products-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HERO ── */
+    .coming-hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: calc(var(--nav-height) + var(--space-8)) var(--space-5) var(--space-8);
+      position: relative;
+      overflow: hidden;
+    }
+    .coming-hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 40%, rgba(139,0,0,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(196,122,26,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(74,26,122,0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .coming-hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139,0,0,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,0,0,0.035) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .coming-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 700px;
+      width: 100%;
+    }
+
+    /* Transmission ID */
+    .tx-id {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      color: var(--blood);
+      text-transform: uppercase;
+      margin-bottom: var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+    }
+    .tx-id::before,
+    .tx-id::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--blood);
+    }
+
+    /* Main heading */
+    .coming-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      line-height: 1;
+      margin-bottom: var(--space-3);
+    }
+    .coming-title em {
+      display: block;
+      color: var(--crimson);
+      font-style: normal;
+    }
+
+    .coming-sub {
+      font-family: var(--font-display);
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      margin-bottom: var(--space-6);
+    }
+
+    /* Status panel */
+    .status-panel {
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      border-top: 2px solid var(--blood);
+      padding: var(--space-5);
+      margin-bottom: var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+    .status-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(255,255,255,0.008) 3px, rgba(255,255,255,0.008) 4px
+      );
+      pointer-events: none;
+    }
+    .status-panel-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .status-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--crimson);
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .status-readout {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--amber-2);
+      letter-spacing: 0.08em;
+      line-height: 1.9;
+    }
+    .status-readout .line-label {
+      color: var(--steel-2);
+      display: inline-block;
+      min-width: 160px;
+    }
+    .status-readout .line-val {
+      color: var(--white);
+    }
+    .status-readout .line-val.pending {
+      color: var(--amber-2);
+    }
+    .status-readout .line-val.tba {
+      color: var(--crimson);
+      animation: flicker 4s infinite;
+    }
+
+    /* Product categories preview */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--ash-2);
+      margin-bottom: var(--space-6);
+      text-align: left;
+    }
+    .cat-card {
+      background: var(--void-2);
+      padding: var(--space-4) var(--space-4);
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--ash-3);
+    }
+    .cat-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(255,255,255,0.006) 3px, rgba(255,255,255,0.006) 4px
+      );
+      pointer-events: none;
+    }
+    .cat-glyph {
+      font-size: 1.6rem;
+      margin-bottom: var(--space-3);
+      opacity: 0.25;
+      line-height: 1;
+    }
+    .cat-name {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-2);
+      margin-bottom: 0.25rem;
+    }
+    .cat-desc {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--ghost);
+      line-height: 1.5;
+      margin-bottom: var(--space-3);
+    }
+    .cat-status {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border: 1px solid var(--ash-2);
+      color: var(--steel-2);
+      display: inline-block;
+    }
+
+    /* Notify form */
+    .notify-wrap {
+      margin-bottom: var(--space-5);
+    }
+    .notify-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--steel-2);
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .notify-form {
+      display: flex;
+      gap: var(--space-2);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .notify-input {
+      flex: 1;
+      background: var(--void-2);
+      border: 1px solid var(--ash-2);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 0.6rem var(--space-4);
+      outline: none;
+      transition: border-color var(--transition-fast);
+      letter-spacing: 0.06em;
+      min-width: 0;
+    }
+    .notify-input:focus { border-color: var(--crimson); }
+    .notify-input::placeholder { color: var(--steel); }
+    .notify-btn {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--white-2);
+      background: var(--blood);
+      border: 1px solid var(--crimson);
+      padding: 0.6rem var(--space-5);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .notify-btn:hover { background: var(--crimson); }
+    .notify-msg {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      min-height: 18px;
+      margin-top: var(--space-2);
+      text-align: center;
+    }
+
+    /* Back link */
+    .back-link {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--steel-2);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      transition: color var(--transition-fast);
+    }
+    .back-link:hover { color: var(--ghost); }
+    .back-link::before { content: '←'; color: var(--blood); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .categories-grid { grid-template-columns: 1fr; }
+      .notify-form { flex-direction: column; }
+      .notify-btn { width: 100%; }
+      .coming-hero { padding-top: calc(var(--nav-height) + var(--space-6)); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <button class="nav-menu-btn" id="navMenuBtn" aria-label="Open navigation menu">☰ Menu</button>
+  <a href="/" class="nav-logo">THE <em>ASHEN</em> REACH</a>
+  <div class="nav-links">
+    <a href="/the-reach"     class="nav-link" data-page="the-reach">The Reach</a>
+    <a href="/transmissions" class="nav-link" data-page="transmissions">Transmissions</a>
+    <a href="/codex"         class="nav-link" data-page="codex">Codex</a>
+    <a href="/community"     class="nav-link" data-page="community">Community</a>
+    <a href="/products"      class="nav-link active" data-page="products">Products</a>
+  </div>
+  <a href="/#join" class="nav-cta">Enter the Reach</a>
+</nav>
+<div class="nav-drawer" id="navDrawer" role="menu">
+  <a href="/the-reach"     class="nav-link">The Reach</a>
+  <a href="/transmissions" class="nav-link">Transmissions</a>
+  <a href="/codex"         class="nav-link">Codex</a>
+  <a href="/community"     class="nav-link">Community</a>
+  <a href="/products"      class="nav-link">Products</a>
+  <a href="/#join"         class="nav-link" style="color:var(--crimson);">Enter the Reach</a>
+</div>
+<div class="overlay" id="navOverlay" aria-hidden="true"></div>
+
+<!-- ── MAIN ── -->
+<div class="products-page">
+  <main class="coming-hero" aria-label="Products coming soon">
+    <div class="coming-hero-bg"   aria-hidden="true"></div>
+    <div class="coming-hero-grid" aria-hidden="true"></div>
+
+    <div class="coming-inner">
+
+      <p class="tx-id">// PRODUCTS · SECTOR: COMMERCE</p>
+
+      <h1 class="coming-title">
+        Transmission
+        <em>Pending</em>
+      </h1>
+      <p class="coming-sub">The Supply Line Is Being Established</p>
+
+      <!-- Status readout -->
+      <div class="status-panel">
+        <div class="status-panel-inner">
+          <p class="status-label">// Procurement Status — Cycle 847</p>
+          <div class="status-readout">
+            <div><span class="line-label">PRODUCT CATALOGUE</span><span class="line-val tba">IN PREPARATION</span></div>
+            <div><span class="line-label">LAUNCH DATE</span><span class="line-val tba">TBA</span></div>
+            <div><span class="line-label">APPAREL</span><span class="line-val pending">Design finalised · Production pending</span></div>
+            <div><span class="line-label">PRINT</span><span class="line-val pending">Art prints · Star maps · Zines</span></div>
+            <div><span class="line-label">MERCHANDISE</span><span class="line-val pending">Patches · Enamel pins · Accessories</span></div>
+            <div><span class="line-label">NOTIFY LIST</span><span class="line-val" id="notifyCount" style="color:var(--toxic-2);">Open</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category preview -->
+      <div class="categories-grid" role="list">
+        <div class="cat-card" role="listitem">
+          <div class="cat-glyph" aria-hidden="true">◈</div>
+          <p class="cat-name">Apparel</p>
+          <p class="cat-desc">Faction tees, hoodies, and caps. Void black. Faction marks. Signal Decay design system throughout.</p>
+          <span class="cat-status">// Date TBA</span>
+        </div>
+        <div class="cat-card" role="listitem">
+          <div class="cat-glyph" aria-hidden="true">▦</div>
+          <p class="cat-name">Print</p>
+          <p class="cat-desc">A1 star maps, faction art prints, and the Transmissions zine. Giclée on fine art cotton rag. Limited runs.</p>
+          <span class="cat-status">// Date TBA</span>
+        </div>
+        <div class="cat-card" role="listitem">
+          <div class="cat-glyph" aria-hidden="true">✦</div>
+          <p class="cat-name">Merch</p>
+          <p class="cat-desc">Enamel faction pins, embroidered patches, and accessories. Designed to the faction identity system.</p>
+          <span class="cat-status">// Date TBA</span>
+        </div>
+      </div>
+
+      <!-- Notify form -->
+      <div class="notify-wrap">
+        <p class="notify-label">// Transmit your comm address — we'll signal you when the catalogue opens</p>
+        <form class="notify-form" data-email-form aria-label="Notify me when products launch">
+          <input
+            class="notify-input"
+            type="email"
+            name="email"
+            placeholder="COMM_ADDRESS..."
+            autocomplete="email"
+            required
+            aria-label="Email address"
+          >
+          <button type="submit" class="notify-btn">Notify Me</button>
+        </form>
+        <p class="notify-msg" data-form-msg aria-live="polite"></p>
+      </div>
+
+      <a href="/" class="back-link">Return to The Ashen Reach</a>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer" role="contentinfo">
+    <div class="footer-grid">
+      <div>
+        <p class="footer-brand-name">THE <em>ASHEN</em> REACH</p>
+        <p class="footer-brand-desc">A collaborative dark science fiction universe. Built by writers, for writers. All lore is canon until it isn't.</p>
+      </div>
+      <nav aria-label="Navigate">
+        <p class="footer-col-title">// Navigate</p>
+        <div class="footer-links">
+          <a href="/the-reach"     class="footer-link">The Reach</a>
+          <a href="/transmissions" class="footer-link">Transmissions</a>
+          <a href="/codex"         class="footer-link">The Codex</a>
+          <a href="/community"     class="footer-link">Community</a>
+          <a href="/products"      class="footer-link">Products</a>
+        </div>
+      </nav>
+      <nav aria-label="Factions">
+        <p class="footer-col-title">// Factions</p>
+        <div class="footer-links">
+          <a href="/factions/dominion" class="footer-link">Dominion Eternal</a>
+          <a href="/factions/covenant" class="footer-link">Fractured Covenant</a>
+          <a href="/factions/vorath"   class="footer-link">Vorath Hegemony</a>
+          <a href="/factions/church"   class="footer-link">Hollow Church</a>
+        </div>
+      </nav>
+      <nav aria-label="Sector">
+        <p class="footer-col-title">// Sector</p>
+        <div class="footer-links">
+          <a href="/about"   class="footer-link">About</a>
+          <a href="/submit"  class="footer-link">Submit a Story</a>
+          <a href="/privacy" class="footer-link">Privacy Policy</a>
+          <a href="/terms"   class="footer-link">Terms of Service</a>
+        </div>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">THE ASHEN REACH // SIGNAL_DECAY.SYSTEM v1.0 // ALL TRANSMISSIONS ARE PERMANENT RECORD</p>
+      <p class="footer-signal">SIGNAL: ACTIVE — THE REACH REMEMBERS</p>
+    </div>
+  </footer>
+</div>
+
+<script src="../scripts/main.js"></script>
+</body>
+</html>
